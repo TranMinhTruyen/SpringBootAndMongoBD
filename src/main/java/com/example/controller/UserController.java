@@ -22,7 +22,7 @@ public class UserController {
     UserServices userServices;
 
     @PostMapping(value = "createUser", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createEmployee(@RequestBody UserRequest userRequest){
+    public ResponseEntity<?> createUser(@RequestBody UserRequest userRequest){
         if (userServices.createUser(userRequest))
           return new ResponseEntity<>(userRequest, HttpStatus.OK);
         else
@@ -34,6 +34,17 @@ public class UserController {
         CommonResponse response = userServices.getAllUser(page, size);
         if (response != null){
           return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping(value="getUserByKeyword")
+    public ResponseEntity<?>getUserByKeyword(@RequestParam int page,
+                                             @RequestParam int size,
+                                             @RequestParam(required = false) String keyword){
+        CommonResponse response = userServices.getUserByKeyWord(page, size, keyword);
+        if (response != null){
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
     }

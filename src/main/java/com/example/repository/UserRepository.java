@@ -8,5 +8,11 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends MongoRepository<User, Integer> {
-    List<User>findUserByFirstNameEqualsOrLastNameEqualsOrAndress_AndressOrAndress_DistricOrAndress_CityOrId(String keyword);
+    List<User>findUserByFirstNameContainingOrLastNameContainingOrAddress_AndressOrAddress_DistricOrAddress_CityOrCitizenId
+            (String firstName,
+             String lastName,
+             String address_andress,
+             String address_distric,
+             String address_city,
+             String citizenId);
 }

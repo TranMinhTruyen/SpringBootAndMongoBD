@@ -20,12 +20,12 @@ public class UserServices {
     public boolean createUser(UserRequest userRequest){
         if (userRequest != null)  {
             User newUser = new User();
-            Address newAddress = userRequest.getAndress();
+            Address newAddress = userRequest.getAddress();
             newUser.setFirstName(userRequest.getFirstName());
             newUser.setLastName(userRequest.getLastName());
             newUser.setBirthDay(userRequest.getBirthDay());
             newUser.setId(userRequest.getId());
-            newUser.setAndress(newAddress);
+            newUser.setAddress(newAddress);
             userRepository.save(newUser);
             return true;
         }
@@ -50,17 +50,21 @@ public class UserServices {
 
     public CommonResponse getUserByKeyWord(int page, int size, String keyword){
         CommonResponse commonResponse = new CommonResponse();
-        List result = userRepository.findUserByFirstNameEqualsOrLastNameEqualsOrAndress_AndressOrAndress_DistricOrAndress_CityOrId(keyword);
-        int offset = (page - 1) * size;
-        int total = result.size();
-        int totalPage = (total%size) == 0 ? (int)(total/size) : (int)((total / size) + 1);
-        Object[] data = result.stream().skip(offset).limit(size).toArray();
-        commonResponse.setData(data);
-        commonResponse.setTotalPage(totalPage);
-        commonResponse.setTotalRecord(total);
-        commonResponse.setPage(page);
-        commonResponse.setSize(size);
-        return commonResponse;
+        List result = userRepository.findUserByFirstNameContainingOrLastNameContainingOrAddress_AndressOrAddress_DistricOrAddress_CityOrCitizenId
+                (keyword, keyword, keyword, keyword, keyword, keyword);
+        if (result != null){
+            int offset = (page - 1) * size;
+            int total = result.size();
+            int totalPage = (total%size) == 0 ? (int)(total/size) : (int)((total / size) + 1);
+            Object[] data = result.stream().skip(offset).limit(size).toArray();
+            commonResponse.setData(data);
+            commonResponse.setTotalPage(totalPage);
+            commonResponse.setTotalRecord(total);
+            commonResponse.setPage(page);
+            commonResponse.setSize(size);
+            return commonResponse;
+        }
+        else return getAllUser(page, size);
     }
 
     public boolean updateUser(int id, UserRequest request){
@@ -69,7 +73,7 @@ public class UserServices {
             User update = user.get();
             update.setFirstName(request.getFirstName());
             update.setLastName(request.getLastName());
-            update.setAndress(request.getAndress());
+            update.setAddress(request.getAddress());
             update.setBirthDay(request.getBirthDay());
             update.setCitizenId(request.getCitizenID());
             update.setImage(request.getImage());

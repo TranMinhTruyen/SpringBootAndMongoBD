@@ -1,26 +1,16 @@
 package com.example.common.model;
 
-
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-
-@Document
 public class Address {
 
-    @Field(value = "Address")
     private String andress;
-
-    @Field(value = "Distric")
     private String distric;
-
-    @Field(value = "City")
     private String city;
 
-    public String getAndress() {
+    public String getAddress() {
         return andress;
     }
 
-    public void setAndress(String andress) {
+    public void setAddress(String andress) {
         this.andress = andress;
     }
 

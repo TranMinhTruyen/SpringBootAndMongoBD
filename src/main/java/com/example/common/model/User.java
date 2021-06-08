@@ -68,11 +68,11 @@ public class User {
         this.birthDay = birthDay;
     }
 
-    public Address getAndress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAndress(Address address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 

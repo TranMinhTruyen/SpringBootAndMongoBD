@@ -1,6 +1,6 @@
 package com.example.common.request;
 
-import com.example.common.model.Andress;
+import com.example.common.model.Address;
 
 import java.util.Date;
 
@@ -9,7 +9,7 @@ public class UserRequest {
     private String firstName;
     private String lastName;
     private Date birthDay;
-    private Andress andress;
+    private Address address;
     private String citizenID;
     private byte[] image;
     private String role;
@@ -18,12 +18,12 @@ public class UserRequest {
     public UserRequest() {
     }
 
-    public UserRequest(int id, String firstName, String lastName, Date birthDay, Andress andress, String citizenID, byte[] image, String role, boolean isActive) {
+    public UserRequest(int id, String firstName, String lastName, Date birthDay, Address address, String citizenID, byte[] image, String role, boolean isActive) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDay = birthDay;
-        this.andress = andress;
+        this.address = address;
         this.citizenID = citizenID;
         this.image = image;
         this.role = role;
@@ -62,12 +62,12 @@ public class UserRequest {
         this.birthDay = birthDay;
     }
 
-    public Andress getAndress() {
-        return andress;
+    public Address getAndress() {
+        return address;
     }
 
-    public void setAndress(Andress andress) {
-        this.andress = andress;
+    public void setAndress(Address address) {
+        this.address = address;
     }
 
     public String getCitizenID() {

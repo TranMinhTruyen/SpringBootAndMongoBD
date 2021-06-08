@@ -5,9 +5,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document
-public class Andress {
+public class Address {
 
-    @Field(value = "Andress")
+    @Field(value = "Address")
     private String andress;
 
     @Field(value = "Distric")
@@ -42,8 +42,8 @@ public class Andress {
 
     @Override
     public String toString() {
-        return "Andress{" +
-                "Andress='" + andress + '\'' +
+        return "Address{" +
+                "Address='" + andress + '\'' +
                 ", Distric='" + distric + '\'' +
                 ", City='" + city + '\'' +
                 '}';

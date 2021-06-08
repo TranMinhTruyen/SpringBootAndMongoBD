@@ -21,8 +21,8 @@ public class User {
     @Field(value = "Birth_Day")
     private Date birthDay;
 
-    @Field(value = "Andress")
-    private Andress andress;
+    @Field(value = "Address")
+    private Address address;
 
     @Field(value = "CitizenID")
     private String citizenId;
@@ -68,12 +68,12 @@ public class User {
         this.birthDay = birthDay;
     }
 
-    public Andress getAndress() {
-        return andress;
+    public Address getAndress() {
+        return address;
     }
 
-    public void setAndress(Andress andress) {
-        this.andress = andress;
+    public void setAndress(Address address) {
+        this.address = address;
     }
 
     public String getCitizenId() {
@@ -115,7 +115,7 @@ public class User {
                 ", FirstName='" + firstName + '\'' +
                 ", LastName='" + lastName + '\'' +
                 ", BirthDay=" + birthDay +
-                ", Andress=" + andress +
+                ", Address=" + address +
                 ", CitizenId='" + citizenId + '\'' +
                 ", Role='" + role + '\'' +
                 ", Image=" + Arrays.toString(image) +

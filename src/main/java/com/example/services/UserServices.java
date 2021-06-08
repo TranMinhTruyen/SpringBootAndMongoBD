@@ -1,6 +1,6 @@
 package com.example.services;
 
-import com.example.common.model.Andress;
+import com.example.common.model.Address;
 import com.example.common.model.User;
 import com.example.common.request.UserRequest;
 import com.example.common.response.CommonResponse;
@@ -20,12 +20,12 @@ public class UserServices {
     public boolean createUser(UserRequest userRequest){
         if (userRequest != null)  {
             User newUser = new User();
-            Andress newAndress = userRequest.getAndress();
+            Address newAddress = userRequest.getAndress();
             newUser.setFirstName(userRequest.getFirstName());
             newUser.setLastName(userRequest.getLastName());
             newUser.setBirthDay(userRequest.getBirthDay());
             newUser.setId(userRequest.getId());
-            newUser.setAndress(newAndress);
+            newUser.setAndress(newAddress);
             userRepository.save(newUser);
             return true;
         }

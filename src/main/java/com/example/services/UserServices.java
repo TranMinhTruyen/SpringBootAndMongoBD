@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServices {
@@ -60,5 +61,32 @@ public class UserServices {
         commonResponse.setPage(page);
         commonResponse.setSize(size);
         return commonResponse;
+    }
+
+    public boolean updateUser(int id, UserRequest request){
+        Optional<User> user = userRepository.findById(id);
+        if(user.isPresent()){
+            User update = user.get();
+            update.setFirstName(request.getFirstName());
+            update.setLastName(request.getLastName());
+            update.setAndress(request.getAndress());
+            update.setBirthDay(request.getBirthDay());
+            update.setCitizenId(request.getCitizenID());
+            update.setImage(request.getImage());
+            update.setRole(request.getRole());
+            update.setActive(request.isActive());
+            userRepository.save(update);
+            return true;
+        }
+        else return false;
+    }
+
+    public boolean deleteUser(int id){
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()){
+            userRepository.deleteById(id);
+            return true;
+        }
+        else return false;
     }
 }

@@ -4,8 +4,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @Document(collection = "User")
 public class User {
@@ -28,13 +30,14 @@ public class User {
     private String citizenId;
 
     @Field(value = "Role")
-    private String role;
+    private List<Role> role;
 
     @Field(value = "Image")
     private byte[] image;
 
     @Field(value = "IsActive")
     private boolean isActive;
+
 
     public int getId() {
         return id;
@@ -84,14 +87,6 @@ public class User {
         this.citizenId = citizenId;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     public byte[] getImage() {
         return image;
     }
@@ -108,18 +103,26 @@ public class User {
         isActive = active;
     }
 
+    public List<Role> getRole() {
+        return role;
+    }
+
+    public void setRole(List<Role> role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", FirstName='" + firstName + '\'' +
-                ", LastName='" + lastName + '\'' +
-                ", BirthDay=" + birthDay +
-                ", Address=" + address +
-                ", CitizenId='" + citizenId + '\'' +
-                ", Role='" + role + '\'' +
-                ", Image=" + Arrays.toString(image) +
-                ", IsActive=" + isActive +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", birthDay=" + birthDay +
+                ", address=" + address +
+                ", citizenId='" + citizenId + '\'' +
+                ", role=" + role +
+                ", image=" + Arrays.toString(image) +
+                ", isActive=" + isActive +
                 '}';
     }
 }

@@ -1,8 +1,11 @@
 package com.example.common.request;
 
 import com.example.common.model.Address;
+import com.example.common.model.Role;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class UserRequest {
     private int id;
@@ -12,23 +15,12 @@ public class UserRequest {
     private Address address;
     private String citizenID;
     private byte[] image;
-    private String role;
+    private List<Role> role;
     private boolean isActive;
 
     public UserRequest() {
     }
 
-    public UserRequest(int id, String firstName, String lastName, Date birthDay, Address address, String citizenID, byte[] image, String role, boolean isActive) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthDay = birthDay;
-        this.address = address;
-        this.citizenID = citizenID;
-        this.image = image;
-        this.role = role;
-        this.isActive = isActive;
-    }
 
     public int getId() {
         return id;
@@ -86,11 +78,11 @@ public class UserRequest {
         this.image = image;
     }
 
-    public String getRole() {
+    public List<Role> getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(List<Role> role) {
         this.role = role;
     }
 

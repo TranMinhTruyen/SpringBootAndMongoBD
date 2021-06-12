@@ -1,13 +1,16 @@
 package com.example.services;
 
 import com.example.common.model.Address;
+import com.example.common.model.AutoIncrement;
+import com.example.common.model.Role;
 import com.example.common.model.User;
 import com.example.common.request.UserRequest;
 import com.example.common.response.CommonResponse;
-import com.example.repository.UserRepository;
+import com.example.repository.mongo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,14 +21,17 @@ public class UserServices {
     UserRepository userRepository;
 
     public boolean createUser(UserRequest userRequest){
+        List<User> last  = AutoIncrement.getLastOfCollection(userRepository);
         if (userRequest != null)  {
             User newUser = new User();
+            List<Role> newListRole = userRequest.getRole();
             Address newAddress = userRequest.getAddress();
             newUser.setFirstName(userRequest.getFirstName());
             newUser.setLastName(userRequest.getLastName());
             newUser.setBirthDay(userRequest.getBirthDay());
-            newUser.setId(userRequest.getId());
+            newUser.setId(last.get(0).getId()+1);
             newUser.setAddress(newAddress);
+            newUser.setRole(newListRole);
             userRepository.save(newUser);
             return true;
         }
@@ -50,8 +56,11 @@ public class UserServices {
 
     public CommonResponse getUserByKeyWord(int page, int size, String keyword){
         CommonResponse commonResponse = new CommonResponse();
-        List result = userRepository.findUserByFirstNameContainingOrLastNameContainingOrAddress_AndressOrAddress_DistricOrAddress_CityOrCitizenId
-                (keyword, keyword, keyword, keyword, keyword, keyword);
+        List<Role> find =new ArrayList<Role>();
+        Role key = new Role();
+        key.setRole(keyword);
+        find.add(key);
+        List result = userRepository.findUserByRoleContains(find);
         if (result != null){
             int offset = (page - 1) * size;
             int total = result.size();
@@ -77,7 +86,7 @@ public class UserServices {
             update.setBirthDay(request.getBirthDay());
             update.setCitizenId(request.getCitizenID());
             update.setImage(request.getImage());
-            update.setRole(request.getRole());
+//            update.setRole(request.getRole());
             update.setActive(request.isActive());
             userRepository.save(update);
             return true;

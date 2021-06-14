@@ -1,0 +1,71 @@
+.sidebar {
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    background-color: #f1f1f1;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+  
+.sidebar a {
+    display: block;
+    color: black;
+    padding: 16px;
+    text-decoration: none;
+}
+
+.sidebar a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.sidebar a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+}
+
+
+@media screen and (max-width: 700px) {
+    .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+}
+.sidebar a {float: left;}
+}
+
+@media screen and (max-width: 400px) {
+    .sidebar a {
+        text-align: center;
+        float: none;
+    }
+}
+
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 50px;
+}
+#button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 50px;
+    padding: 10px;
+}
+
+.cancelbtn {
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 50px;
+    padding: 10px;
+}

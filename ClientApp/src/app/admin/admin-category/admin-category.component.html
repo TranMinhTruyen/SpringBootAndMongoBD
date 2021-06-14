@@ -1,0 +1,155 @@
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<h1 style="text-align: center; margin-top: 50px; margin-bottom: 50px;">DANH SÁCH DANH MỤC</h1>
+
+<div *ngIf = "checkloading == false" class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>       
+    </div> 
+</div>
+
+
+<div class="form-inline">
+    <label>Kích thước bảng:</label>
+    <input id="inputPageSize" class="form-control" [(ngModel)]="size"/>
+    <label style="margin-left: 25px;">Trang thứ: </label>
+    <input id="inputPageSize" class="form-control" [(ngModel)]="page" />
+    <label style="margin-left: 25px;">Từ khóa: </label>
+    <input id="inputPageSize" class="form-control" style="width: 130px;" [(ngModel)]="keyword" />
+    <button id="confirm" (click)="SearchCategory()" type="button" class="btn btn-dark">Xác nhận</button>
+    <button id="confirm" type="button" class="btn btn-success" (click)="openCreateUpdateModal(false, null)" ><li class="fas fa-plus-circle"></li> Thêm</button>
+</div>
+
+
+<h1 *ngIf="categorys.totalRecord == 0 && checkloading == true"><em>Không có dữ liệu của: "{{keyword}}"</em></h1>
+
+
+<table *ngIf = "checkloading == true && categorys.totalRecord > 0">
+    <tr>
+        <th>Mã danh mục</th>
+        <th>Tên danh mục</th>
+        <th>Ngày tạo</th>
+        <th>Chức năng</th>
+    </tr>
+    <tr *ngFor="let data of categorys.data; index as i;">
+        <td style="width: 25%;">{{ data.categoryID }}</td>
+        <td style="width: 30%;">{{ data.categoryName  }}</td>
+        <td style="width: 40%;">{{ data.createDay | date: 'dd/MM/yyyy'}}</td>
+        <td>
+            <div class="btn-group">
+                <button type="button" class="btn btn-info"><li class="fas fa-eye" (click) = "specificInformation(i)"></li></button>
+                <button type="button" class="btn btn-warning" (click)="openCreateUpdateModal(true, i)"><li class="fas fa-pen"></li></button>
+                <button type="button" class="btn btn-danger" (click)="DeleteCategory(data.categoryID)"><li class="fas fa-trash-alt"></li></button>
+            </div>   
+        </td>
+    </tr>
+</table>
+<!--Phân trang-->
+<ul *ngIf = "checkloading == true" class="pagination">
+    <li>
+        <button type="button" class="btn btn-secondary"  (click)="goPrevious()"> << </button>
+    </li>
+    <li class="btn btn-outline-secondary" style="margin-left: 10px;">{{categorys.page}}</li>
+
+    <li style="margin-left: 10px;">
+        <button type="button" class="btn btn-secondary"  (click)="goNext()"> >> </button>
+    </li>
+</ul>
+<!--Phân trang-->
+
+
+
+
+
+<!-- Specific Information Modal -->
+<div class="modal fade" id="specificInformationModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Thông tin nhãn hiệu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><em>Mã danh mục: </em>{{category.categoryID}}</p>
+                <p><em>Tên: </em>{{category.categoryName}}</p>
+                <p><em>Ngày tạo: </em>{{category.createDay | date:'dd-MM-yyyy'}}</p>
+                <p><em>Mô tả: </em>{{category.description}}</p>
+                <p><em>Ghi chú: </em>{{category.note}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Specific Information Modal -->
+
+
+<!--Modal-->
+<div class="modal fade" id="openCreateUpdateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 *ngIf="!isEdit" class="modal-title" id="exampleModalLabel">Tạo danh mục</h2>
+                <h2 *ngIf="isEdit" class="modal-title" id="exampleModalLabel">Sửa danh mục</h2>
+                <button (click)="SearchCategory(categorys.page)" type="button" class="close" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                <div class="row">
+                    <div class="col-9">
+
+                    </div>
+                    <div class="col-3">
+                        <p class="text-danger">* là bắt buộc nhập</p>
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col-3">
+                        Mã danh mục *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" type="text" [(ngModel)]="category.categoryID" />
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col-3">
+                        Tên danh mục *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" type="text" [(ngModel)]="category.categoryName" />
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col-3">
+                        Ngày tạo *
+                    </div>
+                    <div class="col-9">
+                        <input [disabled]="category.createdDate != 0" class="form-control" [(ngModel)]="dateDisplay" />
+                    </div>
+                </div>
+                <br />
+
+
+            </div>
+            <div class="modal-footer">
+                <button *ngIf="!isEdit" type="button" class="btn btn-success" (click)="CreateBrand()">Tạo danh mục</button>
+                <button *ngIf="isEdit" type="button" class="btn btn-primary" (click)="UpdateBrand()">Sửa danh mục</button>
+                <button (click)="SearchCategory(categorys.page)" type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal-->

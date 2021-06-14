@@ -1,0 +1,48 @@
+label{
+    font-weight: bold;
+}
+.form-inline{
+    padding: 20px;
+    border: solid black 1px;
+    margin-bottom: 20px;
+}
+
+#inputPageSize{
+    margin-left: 20px;
+    width: 50px;
+}
+
+#confirm{
+    margin-left: 20px;
+}
+table, th, td{
+    text-align: center;
+    border: black solid 1px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+.side {
+    flex: 20%;
+    background-color: #f1f1f1;
+    padding: 20px;
+}
+.main {   
+    flex: 80%;
+    background-color: white;
+    padding: 20px;
+}
+.row {  
+    display: flex;
+    flex-wrap: wrap;
+}
+.fakeimg {
+    background-color: #aaa;
+    width: 100%;
+    padding: 20px;
+}
+  
+.footer {
+    padding: 20px;
+    text-align: center;
+    background: #ddd;
+}

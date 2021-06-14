@@ -1,0 +1,5 @@
+<h1 *ngIf="isLogin == false && isCustomer == false" style="text-align: center;">Vui lòng đăng nhập trước khi thực hiện</h1>
+<h1 *ngIf="isLogin == true" style="text-align: center;">Chào mừng {{ account }}</h1>
+
+<h1 *ngIf="isCustomer == true" style="margin-left: 23%;">Bạn không có quyền truy cập trang này</h1>
+<h1 *ngIf="isCustomer == true" style="margin-left: 40%;"><a [routerLink]="['/']">Quay lại</a></h1>

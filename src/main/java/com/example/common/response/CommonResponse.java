@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.io.Serializable;
 
+/**
+ * @author Tran Minh Truyen
+ */
+
 @JsonPropertyOrder(value = {
 		"data",
 		"totalRecord",

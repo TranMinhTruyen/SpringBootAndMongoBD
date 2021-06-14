@@ -5,14 +5,17 @@ import com.example.common.request.ProductRequest;
 import com.example.repository.mysql.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+
+/**
+ * @author Tran Minh Truyen
+ */
 
 @Service
 public class ProductServices {
 
 	@Autowired
-	ProductRepository productRepository;
+	private ProductRepository productRepository;
 
 	public boolean createProduct(ProductRequest productRequest){
 		if (productRequest != null){

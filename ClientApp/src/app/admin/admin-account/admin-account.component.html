@@ -1,0 +1,301 @@
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<h1 style="text-align: center; margin-top: 50px; margin-bottom: 50px;">DANH SÁCH TÀI KHOẢN</h1>
+
+<div *ngIf = "checkloading == false" class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+    <span class="sr-only">Loading...</span>       
+    </div> 
+</div>
+
+
+<div class="form-inline">
+    <label>Kích thước bảng:</label>
+    <input id="inputPageSize" class="form-control" [(ngModel)]="size"/>
+    <label style="margin-left: 25px;">Trang thứ: </label>
+    <input id="inputPageSize" class="form-control" [(ngModel)]="page" />
+    <label style="margin-left: 25px;">Từ khóa: </label>
+    <input id="inputPageSize" class="form-control" style="width: 130px;" [(ngModel)]="keyword" />
+    <button id="confirm" (click)="CreateAccount()" type="button" class="btn btn-dark">Xác nhận</button>
+    <button id="confirm" type="button" class="btn btn-success" (click)="openCreateUpdateModal(false, null)" ><li class="fas fa-plus-circle"></li> Thêm</button>
+</div>
+
+
+<h1 *ngIf="accounts.totalRecord == 0 && checkloading == true"><em>Không có dữ liệu của: "{{keyword}}"</em></h1>
+
+
+<table *ngIf = "checkloading == true && accounts.totalRecord > 0">
+    <tr>
+        <th>Tài khoản</th>
+        <th>Mật khẩu</th>
+        <th>Họ</th>
+        <th>Tên</th>
+        <th>Ngày sinh</th>
+        <th>Giới tính</th>
+        <th>CMND</th>
+        <th>Địa chỉ</th>
+        <th>SĐT</th>
+        <th>Email</th>
+        <th>Ngày tạo</th>
+        <th>Tình trạng</th>
+        <th>Ghi chú</th>
+        <th>Chức năng</th>
+    </tr>
+    <tr *ngFor="let data of accounts.data; index as i;">
+        <td style="width: 7%;">{{ data.account }}</td>
+        <td style="width: 7%;">{{ data.pass}}</td>
+        <td style="width: 5%;">{{ data.lastName }}</td>
+        <td style="width: 5%;">{{ data.firstName  }}</td>
+        <td style="width: 7%;">{{ data.dateOfBirth }}</td>
+        <td style="width: 3%;">{{ data.gender }}</td>
+        <td style="width: 7%;">{{ data.citizenIdentification }}</td>
+        <td style="width: 15%;">{{ data.address }}</td>
+        <td style="width: 7%;">{{ data.phoneNumberOfEmployee }}</td>
+        <td style="width: 5%;">{{ data.email }}</td>
+        <td style="width: 5%;">{{ data.createdDate | date: 'dd/MM/yyyy' }}</td>
+        <td style="width: 2%;">{{ data.accountStatus }}</td>
+        <td style="width: 5%;">{{ data.note }}</td>
+        <td style="width: 5%;">
+            <div class="btn-group">
+                <button type="button" class="btn btn-info"><li class="fas fa-eye" (click) = "specificInformation(i)"></li></button>
+                <button type="button" class="btn btn-warning" (click)="openCreateUpdateModal(true, i)"><li class="fas fa-pen"></li></button>
+                <button *ngIf="data.account != 'admin'" type="button" class="btn btn-danger" (click)="DeleteAccount(data.account)"><li class="fas fa-trash-alt"></li></button>
+            </div>   
+        </td>
+    </tr>
+</table>
+<!--Phân trang-->
+<ul *ngIf = "checkloading == true" class="pagination">
+    <li>
+        <button type="button" class="btn btn-secondary"  (click)="goPrevious()"> << </button>
+    </li>
+    <li class="btn btn-outline-secondary" style="margin-left: 10px;">{{accounts.page}}</li>
+
+    <li style="margin-left: 10px;">
+        <button type="button" class="btn btn-secondary"  (click)="goNext()"> >> </button>
+    </li>
+</ul>
+<!--Phân trang-->
+
+
+<!-- Specific Information Modal -->
+<div class="modal fade" id="specificInformationModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Thông tin tài khoảng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><em>Tài khoản:</em> {{ account.account }}</p>
+                <p><em>Mật khẩu:</em> {{ account.pass }}</p>
+                <p><em>Họ:</em> {{ account.lastName }}</p>
+                <p><em>Tên:</em> {{ account.firstName  }}</p>
+                <p><em>Ngày sinh:</em> {{ account.dateOfBirth }}</p>
+                <p><em>Giới tính:</em> {{ account.gender }}</p>
+                <p><em>CMND:</em> {{ account.citizenIdentification }}</p>
+                <p><em>Địa chỉ:</em> {{ account.address }}</p>
+                <p><em>SĐT:</em> {{ account.phoneNumberOfEmployee }}</p>
+                <p><em>Email:</em> {{ account.email }}</p>
+                <p><em>Ngày tạo:</em> {{ account.createdDate | date: 'dd/MM/yyyy' }}</p>
+                <p><em>Tình trạng:</em> {{ account.accountStatus }}</p>
+                <p><em>Ghi chú:</em> {{ account.note }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Specific Information Modal -->
+
+
+<!--Modal-->
+<div class="modal fade" id="openCreateUpdateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 *ngIf="!isEdit" class="modal-title" id="exampleModalLabel">Tạo tài khoản</h2>
+                <h2 *ngIf="isEdit" class="modal-title" id="exampleModalLabel">Sửa tài khoản</h2>
+                <button (click)="SearchAccount(accounts.page)" type="button" class="close" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                <div class="row">
+                    <div class="col-9">
+
+                    </div>
+                    <div class="col-3">
+                        <p class="text-danger">* là bắt buộc nhập</p>
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col-3">
+                        Tài khoản *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" [disabled]="isEdit" type="text" [(ngModel)]="account.account" />
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <div class="col-3">
+                        Mật khẩu *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" type="text" [(ngModel)]="account.pass" />
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <div class="col-3">
+                        Họ *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" type="text" [(ngModel)]="account.lastName" />
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <div class="col-3">
+                        Tên *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" type="text" [(ngModel)]="account.firstName" />
+                    </div>
+                </div>
+                <br />
+
+                
+                <div class="row">
+                    <div class="col-3">
+                        Ngày sinh *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" type="date" [(ngModel)]="account.dateOfBirth" />
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <div class="col-3">
+                        Giới tính *
+                    </div>
+                    <div class="col-9">
+                        <div class="form-group">
+                            <select [(ngModel)]="account.gender" class="form-control">
+                                <option>Nam</option>
+                                <option>Nữ</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <div class="col-3">
+                        CMND *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" type="text" [(ngModel)]="account.citizenIdentification" />
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <div class="col-3">
+                        Địa chỉ *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" type="text" [(ngModel)]="account.address" />
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <div class="col-3">
+                        SĐT *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" type="text" [(ngModel)]="account.phoneNumberOfEmployee" />
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <div class="col-3">
+                        Email *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" type="text" [(ngModel)]="account.email" />
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <div class="col-3">
+                        Tình trạng *
+                    </div>
+                    <div class="col-9">
+                        <div class="form-group">
+                            <select [disabled]="account.account == 'admin'" [(ngModel)]="account.accountStatus" class="form-control">
+                                <option value="0">Active</option>
+                                <option value="1">Disabled</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <div class="col-3">
+                        Ngày tạo *
+                    </div>
+                    <div class="col-9">
+                        <input [disabled]="account.createdDate != 0" class="form-control" [(ngModel)]="dateDisplay" />
+                    </div>
+                </div>
+                <br />
+
+
+                <div class="row">
+                    <div class="col-3">
+                        Ghi chú *
+                    </div>
+                    <div class="col-9">
+                        <textarea class="form-control" rows=3 [(ngModel)]="account.note"></textarea>
+                    </div>
+                </div>
+                <br />
+
+            </div>
+            <div class="modal-footer">
+                <button *ngIf="!isEdit" type="button" class="btn btn-success" (click)="CreateAccount()">Tạo tài khoản</button>
+                <button *ngIf="isEdit" type="button" class="btn btn-primary" (click)="UpdateAccount()">Sửa tài khoản</button>
+                <button (click)="SearchAccount(accounts.page)" type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal -->

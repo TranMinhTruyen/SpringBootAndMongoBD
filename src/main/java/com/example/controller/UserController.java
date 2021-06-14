@@ -1,8 +1,14 @@
 package com.example.controller;
 
+import com.example.common.request.LoginRequest;
 import com.example.common.request.UserRequest;
 import com.example.common.response.CommonResponse;
+import com.example.common.response.UserResponse;
 import com.example.services.UserServices;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +16,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
+
+/**
+ * @author Tran Minh Truyen
+ */
 
 @Tag(name = "UserController")
 @RestController
@@ -21,14 +32,26 @@ public class UserController {
     @Autowired
     UserServices userServices;
 
+    @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
     @PostMapping(value = "createUser", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createUser(@RequestBody UserRequest userRequest){
+    public ResponseEntity<?> createUser(@RequestBody UserRequest userRequest) {
         if (userServices.createUser(userRequest))
-          return new ResponseEntity<>(userRequest, HttpStatus.OK);
+          return new ResponseEntity<>("User is added", HttpStatus.OK);
         else
           return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
     }
 
+    @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
+    @PostMapping(value = "login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        UserResponse userResponse = userServices.Login(loginRequest);
+        if (userResponse != null)
+            return new ResponseEntity<>(userResponse, HttpStatus.OK);
+        else
+            return new ResponseEntity<>("Not found user", HttpStatus.NOT_FOUND);
+    }
+
+    @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
     @GetMapping(value="getAllUser")
     public ResponseEntity<?>getAllUser(@RequestParam int page, @RequestParam int size){
         CommonResponse response = userServices.getAllUser(page, size);
@@ -38,6 +61,7 @@ public class UserController {
         else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
     }
 
+    @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
     @GetMapping(value="getUserByKeyword")
     public ResponseEntity<?>getUserByKeyword(@RequestParam int page,
                                              @RequestParam int size,
@@ -49,14 +73,16 @@ public class UserController {
         else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
     }
 
+    @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
     @PutMapping(value = "updateUser", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?>updateUser(@RequestParam int id, @RequestBody UserRequest userRequest){
+    public ResponseEntity<?>updateUser(@RequestParam int id, @RequestBody UserRequest userRequest) {
         if (userServices.updateUser(id, userRequest)){
             return new ResponseEntity<>("user is update", HttpStatus.OK);
         }
         else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
     }
 
+    @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
     @DeleteMapping(value = "deleteUser")
     public ResponseEntity<?>deleteUser(@RequestParam int id){
         if (userServices.deleteUser(id)){

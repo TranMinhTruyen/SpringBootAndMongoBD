@@ -1,0 +1,258 @@
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<h1 style="text-align: center; margin-top: 50px; margin-bottom: 50px;">DANH SÁCH SẢN PHẨM</h1>
+
+<div *ngIf = "checkloading == false" class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+    <span class="sr-only">Loading...</span>       
+    </div> 
+</div>
+
+
+<div class="form-inline">
+    <label>Kích thước bảng:</label>
+    <input id="inputPageSize" class="form-control" [(ngModel)]="size"/>
+    <label style="margin-left: 25px;">Trang thứ: </label>
+    <input id="inputPageSize" class="form-control" [(ngModel)]="page" />
+    <label style="margin-left: 25px;">Từ khóa: </label>
+    <input id="inputPageSize" class="form-control" style="width: 130px;" [(ngModel)]="keyword" />
+    <button id="confirm" (click)="SearchProduct()" type="button" class="btn btn-dark">Xác nhận</button>
+    <button id="confirm" type="button" class="btn btn-success" (click)="openCreateUpdateModal(false, null)" ><li class="fas fa-plus-circle"></li> Thêm</button>
+</div>
+
+
+<h1 *ngIf="products.totalRecord == 0 && checkloading == true"><em>Không có dữ liệu của: "{{keyword}}"</em></h1>
+
+
+<table *ngIf = "checkloading == true && products.totalRecord > 0">
+    <tr>
+        <th>Mã sản phẩm</th>
+        <th>Mã thương hiệu</th>
+        <th>Mã danh mục</th>
+        <th>Tên sản phẩm</th>
+        <th>Giá</th>
+        <th>Ngày tạo</th>
+        <th>Đơn vị</th>
+        <th>Tồn kho</th>
+        <th>Giảm giá</th>
+        <th>Chức năng</th>
+    </tr>
+    <tr *ngFor="let data of products.data; index as i;">
+        <td style="width: 5%;">{{ data.productID }}</td>
+        <td style="width: 5%;">{{ data.brandID}}</td>
+        <td style="width: 5%;">{{ data.categoryID }}</td>
+        <td style="width: 25%;">{{ data.productName }}</td>
+        <td style="width: 15%;">{{ data.price }}</td>
+        <td style="width: 15%;">{{ data.createDate | date: 'dd/MM/yyyy'}}</td>
+        <td style="width: 10%;">{{ data.unit }}</td>
+        <td style="width: 5%;">{{ data.unitsInStock }}</td>
+        <td style="width: 5%;">{{ data.discount }}</td>
+        <td>
+            <div class="btn-group">
+                <button type="button" class="btn btn-info" (click) = "specificInformation(i)"><li class="fas fa-eye"></li></button>
+                <button type="button" class="btn btn-warning" (click)="openCreateUpdateModal(true, i)"><li class="fas fa-pen"></li></button>
+                <button type="button" class="btn btn-danger" (click)="DeleteProduct(data.productID)"><li class="fas fa-trash-alt"></li></button>
+            </div>   
+        </td>
+    </tr>
+</table>
+<!--Phân trang-->
+<ul *ngIf = "checkloading == true" class="pagination">
+    <li>
+        <button type="button" class="btn btn-secondary"  (click)="goPrevious()"> << </button>
+    </li>
+    <li class="btn btn-outline-secondary" style="margin-left: 10px;">{{products.page}}</li>
+
+    <li style="margin-left: 10px;">
+        <button type="button" class="btn btn-secondary"  (click)="goNext()"> >> </button>
+    </li>
+</ul>
+<!--Phân trang-->
+
+
+<!-- Specific Information Modal -->
+<div class="modal fade" id="specificInformationModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Thông tin sản phẩm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><em>Mã sản phẩm: </em>{{product.productID}}</p>
+                <p><em>Tên: </em>{{product.productName}}</p>
+                <p><em>Mã danh mục: </em>{{product.brandID}}</p>
+                <p><em>Mã thương hiệu: </em>{{product.categoryID}}</p>
+                <p><em>Ngày tạo: </em>{{product.createDate | date:'dd-MM-yyyy'}}</p>
+                <p><em>Đơn vị: </em>{{product.unit}}</p>
+                <p><em>Tồn kho: </em>{{product.unitsInStock}}</p>
+                <p><em>Khuyến mãi: </em>{{product.discount}}</p>
+                <p><em>Mô tả: </em>{{product.description}}</p>
+                <p><em>Ghi chú: </em>{{product.note}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Specific Information Modal -->
+
+<!--Modal-->
+<div class="modal fade" id="openCreateUpdateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 *ngIf="!isEdit" class="modal-title" id="exampleModalLabel">Tạo sản phẩm</h2>
+                <h2 *ngIf="isEdit" class="modal-title" id="exampleModalLabel">Sửa sản phẩm</h2>
+                <button (click)="SearchProduct(products.page)" type="button" class="close" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+
+                <div class="row">
+                    <div class="col-9">
+
+                    </div>
+                    <div class="col-3">
+                        <p class="text-danger">* là bắt buộc nhập</p>
+                    </div>
+                </div>
+                <br />
+                <!---->
+                <div class="row">
+                    <div class="col-2">
+                        Mã sản phẩm *
+                    </div>
+                    <div class="col-2">
+                        <input [disabled]="isEdit" class="form-control" [(ngModel)]="product.productID" />
+                    </div>
+                    <div class="col-2">
+                        Mã danh mục *
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <select [(ngModel)]="product.categoryID" class="form-control">
+                                <option [(ngValue)] ="data.categoryID" *ngFor="let data of selectCategory">
+                                    {{data.categoryName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        Mã thương hiệu *
+                    </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <select [(ngModel)]="product.brandID" class="form-control">
+                                <option [(ngValue)] ="data.brandID" *ngFor="let data of selectBrand">
+                                    {{data.brandName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <!---->
+                <div class="row">
+                    <div class="col-3">
+                        Tên sản phẩm *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" [(ngModel)]="product.productName" />
+                    </div>
+                </div>
+                <br />
+                <!---->
+                <div class="row">
+                    <div class="col-3">
+                        Giá sản phẩm *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" [(ngModel)]="product.price" />
+                    </div>
+                </div>
+                <br />
+                <!---->
+                <div class="row">
+                    <div class="col-3">
+                        Ngày tạo *
+                    </div>
+                    <div class="col-9">
+                        <input [disabled]="product.createdDate != 0" class="form-control" [(ngModel)]="dateDisplay"/>
+                    </div>
+                </div>
+                <br />
+                <!---->
+                <div class="row">
+                    <div class="col-2">
+                        Đơn vị *
+                    </div>
+                    <div class="col-2">
+                        <input class="form-control" [(ngModel)]="product.unit" />
+                    </div>
+                    <div class="col-2">
+                        Tồn kho*
+                    </div>
+                    <div class="col-2">
+                        <input class="form-control" [(ngModel)]= "product.unitsInStock" />
+                    </div>
+                    <div class="col-2">
+                        Khuyến mãi *
+                    </div>
+                    <div class="col-2">
+                        <input class="form-control" [(ngModel)]="product.discount" />
+                    </div>
+                </div>
+                <br />
+                <!---->
+                <div class="row">
+                    <div class="col-12">
+                        Mô tả
+                    </div>
+                </div>
+                <!---->
+                <div class="row">
+                    <div class="col-12">
+                        <textarea class="form-control" rows=3 [(ngModel)]="product.description"></textarea>
+                    </div>
+                </div>
+                <!---->
+                <div class="row">
+                    <div class="col-12">
+                        Ghi chú
+                    </div>
+                    <div class="col-12">
+                        <textarea class="form-control" rows=3 [(ngModel)]="product.note"></textarea>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        Hình ảnh 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <textarea class="form-control" rows=3 [(ngModel)]="product.picture"></textarea>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button *ngIf="!isEdit" type="button" class="btn btn-success" (click)="CreateProduct()">Tạo sản phẩm</button>
+                <button *ngIf="isEdit" type="button" class="btn btn-primary" (click)="UpdateProduct()">Sửa sản phẩm</button>
+                <button (click)="SearchProduct(products.page)" type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal-->
+
+

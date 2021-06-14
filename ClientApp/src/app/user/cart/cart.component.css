@@ -1,0 +1,44 @@
+.row {  
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.side {
+    flex: 35%;
+    background-color: #e4cbcb;
+    padding: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.main {   
+    flex: 65%;
+    background-color: #f1f1f1;
+    padding: 30px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+#btn{
+    width: 38px;
+} 
+
+#input{
+    width: 50px;
+    text-align: center;
+}
+
+input[type="number"] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+}
+
+table, td{
+    border: black solid 1px;
+    padding: 20px;
+}

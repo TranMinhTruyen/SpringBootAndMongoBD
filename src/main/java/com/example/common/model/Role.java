@@ -1,5 +1,9 @@
 package com.example.common.model;
 
+/**
+ * @author Tran Minh Truyen
+ */
+
 public class Role {
 	private String role;
 

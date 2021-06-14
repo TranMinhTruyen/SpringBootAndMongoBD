@@ -1,0 +1,85 @@
+<div class="row">
+    <div class="side">
+        <div class="container">
+            <h2>Tìm kiếm sản phẩm</h2>
+            <br/>
+            <div class="btn-group" style="width: 100%;">
+                <input id="searchInput" type="text" [(ngModel)]="keyword" class="form-control"/>
+                <button id="searchButton" type="button" (click)="SearchProduct()" class="btn btn-success"><li class="fas fa-search"></li></button>
+            </div>
+        </div>
+
+        <br/>
+        <hr style="width:100%; height: 2px; color:black; background-color:black">
+
+        <div class="container">
+            <h2>Bộ lọc</h2>
+            <div class="form-group">
+                <label>Giá tiền</label>
+                <select class="form-control" [(ngModel)]="priceFilter">
+                    <option value="0">Tất cả sản phẩm</option>
+                    <option value="5000000">Dưới 5.000.000 VNĐ</option>
+                    <option value="4000000">Dưới 4.000.000 VNĐ</option>
+                    <option value="3000000">Dưới 3.000.000 VNĐ</option>
+                    <option value="2000000">Dưới 2.000.000 VNĐ</option>
+                    <option value="1000000">Dưới 1.000.000 VNĐ</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <button id="confirm" (click)="FilterProduct()" type="button" class="btn btn-success"><li class="fas fa-filter"></li> Lọc</button>
+                <button id="confirm" (click)="SearchProduct()" type="button" class="btn btn-danger" style="margin-left: 10px;"><li class="fa fa-close"></li> Hủy</button>
+            </div>
+        </div>
+    </div>
+    <div class="main">
+        <h1 style="text-align: center;"><strong>{{ name }}</strong></h1>
+        <h1 style="text-align: center;" *ngIf="products.totalRecord == 0 && checkloading == true"><em>Không có dữ liệu của sản phẩm</em></h1>
+
+        <!--Card chứa thông tin sản phẩm-->
+        <div class="container">
+            <div class="row ">
+                <div *ngFor="let data of products.data; index as i;">
+
+                    <div class="card">
+                        <div [routerLink]="['/product']" [queryParams]="{productID: data.productID}">
+                            <img *ngIf = "data.picture == 'null'" class="card-img-top" src="https://lunawood.com/wp-content/uploads/2018/02/placeholder-image.png" alt="Shoes" style="width:100%; height: 250px;">
+                            <img *ngIf = "data.picture != 'null'" class="card-img-top" (error)="setDefaultPic($event)" src="{{data.picture}}" alt="Shoes" style="width:100%; height: 250px;">
+                            <br/>
+                            <br/>
+                            <h3>{{ data.productName }}</h3>
+                            <h5 *ngIf = "data.unitsInStock == 0"><span class="badge badge-danger">Hết hàng</span></h5>
+                            <h5 *ngIf = "data.unitsInStock != 0"><span class="badge badge-success">Còn hàng</span></h5>
+                            <p class="price">Giá tiền: {{ data.price }} VNĐ</p>
+                            <p class="price">Thương hiệu: {{ data.brandName }} </p>
+                            <p class="price">Tồn kho: {{ data.unitsInStock }}</p>
+                            <p class="price">Giảm giá: {{ data.discount }}</p>
+                        </div>
+                        
+                        <p *ngIf = "data.unitsInStock != 0"><button (click)="addProductToCart(data.productID, data.unitsInStock)"><li class="fas fa-cart-plus"></li> Thêm vào giỏ hàng</button></p>
+                        <p *ngIf = "data.unitsInStock == 0"><button>Sản phẩm tạm hết hàng</button></p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--Card chứa thông tin sản phẩm-->
+        <br/>
+
+        <!--Phân trang-->
+        <div class="container" style="margin-left: 43%;">
+            <ul *ngIf = "checkloading == true" class="pagination">
+                <li>
+                    <button type="button" class="btn btn-secondary"  (click)="goPrevious()"> << </button>
+                </li>
+                <li class="btn btn-outline-secondary" style="margin-left: 10px;">{{products.page}}</li>
+
+                <li style="margin-left: 10px;">
+                    <button type="button" class="btn btn-secondary"  (click)="goNext()"> >> </button>
+                </li>
+            </ul>
+        </div>
+        <!--Phân trang-->
+
+    </div>
+</div>

@@ -1,0 +1,192 @@
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<h1 style="text-align: center; margin-top: 50px; margin-bottom: 50px;">DANH SÁCH ĐƠN HÀNG</h1>
+
+<div *ngIf = "checkloading == false" class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>       
+    </div> 
+</div>
+    
+    
+<div class="form-inline">
+    <label>Kích thước bảng:</label>
+    <input id="inputPageSize" class="form-control" [(ngModel)]="size"/>
+    <label style="margin-left: 25px;">Trang thứ: </label>
+    <input id="inputPageSize" class="form-control" [(ngModel)]="page" />
+    <label style="margin-left: 25px;">Từ khóa: </label>
+    <input id="inputPageSize" class="form-control" style="width: 130px;" [(ngModel)]="keyword" />
+    <button id="confirm" (click)="SearchOrder()" type="button" class="btn btn-dark">Xác nhận</button>
+</div>
+        
+        
+<h1 *ngIf="orders.totalRecord == 0 && checkloading == true"><em>Không có dữ liệu của: "{{keyword}}"</em></h1>
+
+<table *ngIf = "checkloading == true && orders.totalRecord > 0">
+    <tr>
+        <th>Mã đơn hàng</th>
+        <th>Tên</th>
+        <th>Ngày tạo</th>
+        <th>SĐT</th>
+        <th>Địa chỉ</th>
+        <th>Tình trạng đơn hàng</th>
+        <th>Chức năng</th>
+    </tr>
+    <tr *ngFor="let data of orders.data; index as i;">
+        <td style="width: 5%;">{{ data.orderID }}</td>
+        <td style="width: 20%;">{{ data.name  }}</td>
+        <td style="width: 10%;">{{ data.createdDate | date: 'dd/MM/yyyy'}}</td>
+        <td style="width: 10%;">{{ data.phoneNumberOfOrder }}</td>
+        <td style="width: 40%;">{{ data.address }}</td>
+        <td style="width: 10%;">{{ data.status }}</td>
+        <td>
+            <div class="btn-group">
+                <button type="button" class="btn btn-info"><li class="fas fa-eye" (click) = "specificInformation(i)"></li></button>
+                <button type="button" class="btn btn-warning" (click)="openCreateUpdateModal(true, i)"><li class="fas fa-pen"></li></button>
+            </div>   
+        </td>
+    </tr>
+</table>
+
+<!--Phân trang-->
+<ul *ngIf = "checkloading == true" class="pagination">
+    <li>
+        <button type="button" class="btn btn-secondary"  (click)="goPrevious()"> << </button>
+    </li>
+    <li class="btn btn-outline-secondary" style="margin-left: 10px;">{{orders.page}}</li>
+
+    <li style="margin-left: 10px;">
+        <button type="button" class="btn btn-secondary"  (click)="goNext()"> >> </button>
+    </li>
+</ul>
+<!--Phân trang-->
+
+
+<!-- Specific Information Modal -->
+<div class="modal fade" id="specificInformationModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Thông tin đơn hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><em>Mã đơn hàng: </em>{{order.orderID}}</p>
+                <p><em>Tên: </em>{{order.name}}</p>
+                <p><em>Ngày tạo: </em>{{order.createdDate | date:'dd-MM-yyyy'}}</p>
+                <p><em>SĐT: </em>{{order.phoneNumberOfOrder}}</p>
+                <p><em>Địa chỉ: </em>{{ order.address }}</p>
+                <p><em>Tình trạng: </em>{{ order.status }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Specific Information Modal -->
+
+
+<!--Modal-->
+<div class="modal fade" id="openCreateUpdateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 *ngIf="isEdit" class="modal-title" id="exampleModalLabel">Cập nhật đơn hàng</h2>
+                <button (click)="SearchBrand(orders.page)" type="button" class="close" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                <div class="row">
+                    <div class="col-9">
+
+                    </div>
+                    <div class="col-3">
+                        <p class="text-danger">* là bắt buộc nhập</p>
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col-3">
+                        Mã đơn hàng *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" type="text" [(ngModel)]="order.orderID" />
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col-3">
+                        Tên *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" type="text" [(ngModel)]="order.name" />
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col-3">
+                        Ngày tạo *
+                    </div>
+                    <div class="col-9">
+                        <input [disabled]="order.createdDate != 0" class="form-control" [(ngModel)]="dateDisplay" />
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col-3">
+                        SĐT *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" [(ngModel)]="order.phoneNumberOfOrder" />
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col-3">
+                        Địa chỉ *
+                    </div>
+                    <div class="col-9">
+                        <input class="form-control" [(ngModel)]="order.address" />
+                    </div>
+                </div>
+                <br />
+                
+
+                <div *ngIf="order.status != 4 && order.status != 0" class="row">
+                    <div class="col-3">
+                        Tình trạng *
+                    </div>
+                    <div class="col-9">
+                        <div class="form-group">
+                            <select [(ngModel)]="order.status" class="form-control">
+                                <option value="1">Unapproved</option>
+                                <option value="2">Approved</option>
+                                <option value="3">Shipping</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+
+            </div>
+            <div class="modal-footer">
+                <button *ngIf="isEdit" type="button" class="btn btn-primary" (click)="UpdateOrder()">Cập nhật hàng</button>
+                <button (click)="SearchOrder(orders.page)" type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal-->

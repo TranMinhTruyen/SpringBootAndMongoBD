@@ -1,0 +1,44 @@
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<div class="sidebar" *ngIf="isCustomer == false">
+    <a class="nav-link" [routerLink]="['/admin']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><i class="fas fa-home"></i> Trang chủ</a>
+    <a class="nav-link" *ngIf="isLogin == true" [routerLink]="['/admin/category']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Danh mục</a>
+    <a class="nav-link" *ngIf="isLogin == true" [routerLink]="['/admin/brand']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Thương hiệu</a>
+    <a class="nav-link" *ngIf="isLogin == true" [routerLink]="['/admin/products']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Sản phẩm</a>
+    <a class="nav-link" *ngIf="isLogin == true" [routerLink]="['/admin/account']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Tài khoản nhân viên</a>
+    <a class="nav-link" *ngIf="isLogin == true" [routerLink]="['/admin/customeraccount']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Tài khoản khách hàng</a>
+    <a class="nav-link" *ngIf="isLogin == true" [routerLink]="['/admin/order']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Đơn hàng</a>
+    <a class="nav-link" *ngIf="isLogin == false" (click)="openLoginModal()">Đăng nhập</a>
+    <a class="nav-link" *ngIf="isLogin == true" [routerLink]="['/admin']" (click)="logout()">Đăng xuất</a>
+    <a class="nav-link" *ngIf="isLogin == true">{{ account }}</a>
+</div>
+
+<!--Login Modal-->
+<div class="modal fade" id="LoginModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header container">
+                <h1>Đăng nhập</h1>
+            </div>
+            <div class="modal-body">
+
+                <label for="uname"><b>Tên đăng nhập</b></label>
+                <div style="display: flex;">
+                    <input type="text" placeholder="Tên đăng nhập" name="uname" [(ngModel)]="data.account">
+                </div>
+                <br/>
+
+                <label for="psw"><b>Mật khẩu</b></label>
+                <div style="display: flex;">
+                    <input type="password" placeholder="Mật khẩu" name="psw" [(ngModel)]="data.pass">
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button id="button" type="submit" (click)="checkLogin()">Đăng nhập</button>
+                <button type="button" class="cancelbtn" aria-label="Close" data-dismiss="modal">Thoát</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Login Modal-->

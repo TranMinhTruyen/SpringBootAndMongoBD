@@ -4,15 +4,22 @@ import com.example.common.model.Address;
 import com.example.common.model.AutoIncrement;
 import com.example.common.model.Role;
 import com.example.common.model.User;
+import com.example.common.request.LoginRequest;
 import com.example.common.request.UserRequest;
 import com.example.common.response.CommonResponse;
+import com.example.common.response.UserResponse;
 import com.example.repository.mongo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+/**
+ * @author Tran Minh Truyen
+ */
 
 @Service
 public class UserServices {
@@ -20,23 +27,26 @@ public class UserServices {
     @Autowired
     UserRepository userRepository;
 
-    public boolean createUser(UserRequest userRequest){
-        List<User> last  = AutoIncrement.getLastOfCollection(userRepository);
+    public boolean createUser(UserRequest userRequest) {
+        List<User> last  = new AutoIncrement(userRepository).getLastOfCollection();
         if (userRequest != null)  {
             User newUser = new User();
             List<Role> newListRole = userRequest.getRole();
             Address newAddress = userRequest.getAddress();
+            newUser.setAccount(userRequest.getAccount());
+            newUser.setPassword(userRequest.getPassword());
             newUser.setFirstName(userRequest.getFirstName());
             newUser.setLastName(userRequest.getLastName());
             newUser.setBirthDay(userRequest.getBirthDay());
-            newUser.setId(last.get(0).getId()+1);
+            if (last != null)
+                newUser.setId(last.get(0).getId()+1);
+            else newUser.setId(1);
             newUser.setAddress(newAddress);
             newUser.setRole(newListRole);
             userRepository.save(newUser);
             return true;
         }
         else return false;
-
     }
 
     public CommonResponse getAllUser(int page, int size){
@@ -76,7 +86,24 @@ public class UserServices {
         else return getAllUser(page, size);
     }
 
-    public boolean updateUser(int id, UserRequest request){
+    public UserResponse Login(LoginRequest loginRequest){
+        User result = userRepository.findUserByAccountAndPassword(loginRequest.getAccount(), loginRequest.getPassword());
+        if (result != null){
+            UserResponse response = new UserResponse();
+            response.setFirstName(result.getFirstName());
+            response.setLastName(result.getLastName());
+            response.setBirthDay(result.getBirthDay());
+            response.setAddress(result.getAddress());
+            response.setCitizenID(result.getCitizenId());
+            response.setImage(result.getImage());
+            response.setRole(result.getRole());
+            response.setActive(result.isActive());
+            return response;
+        }
+        else return null;
+    }
+
+    public boolean updateUser(int id, UserRequest request) {
         Optional<User> user = userRepository.findById(id);
         if(user.isPresent()){
             User update = user.get();

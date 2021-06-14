@@ -6,9 +6,11 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
-
 import java.util.EnumSet;
 
+/**
+ * @author Tran Minh Truyen
+ */
 public class CreateDatabase {
 	public static void dropDataBase(SchemaExport export, Metadata metadata){
 		EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.DATABASE);

@@ -1,0 +1,50 @@
+<div class="row">
+    <div class="side">
+        <div class="container">
+            <h2>Tìm kiếm danh mục</h2>
+            <br/>
+            <div class="btn-group" style="width: 100%;">
+                <input id="searchInput" type="text" [(ngModel)]="keyword" class="form-control"/>
+                <button id="searchButton" type="button" (click)="SearchCategory()" class="btn btn-success"><li class="fas fa-search"></li></button>
+            </div>
+        </div>
+    </div>
+    <div class="main">
+        <h1 style="text-align: center;" *ngIf="categorys.totalRecord == 0 && checkloading == true"><em>Không có dữ liệu của sản phẩm</em></h1>
+        <h1 style="text-align: center;">Danh mục</h1>
+        <!--Card chứa thông tin-->
+        <div class="container">
+            <div class="row ">
+                <div *ngFor="let data of categorys.data; index as i;">
+
+                    <div class="card">
+                        <div [routerLink]="['/productbycategory']" [queryParams]="{categoryID: data.categoryID,categoryName: data.categoryName}">
+                            <img *ngIf = "data.picture == null" class="card-img-top" src="https://lunawood.com/wp-content/uploads/2018/02/placeholder-image.png" alt="Shoes" style="width:100%; height: 250px;">
+                            <img *ngIf = "data.picture != null" class="card-img-top" (error)="setDefaultPic($event)" src="{{data.picture}}" alt="Shoes" style="width:100%; height: 250px;">
+                            <br/>
+                            <h1>{{ data.categoryName }}</h1>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--Card chứa thông tin-->
+        <br/>
+
+        <!--Phân trang-->
+        <div class="container" style="margin-left: 43%;">
+            <ul *ngIf = "checkloading == true" class="pagination">
+                <li>
+                    <button type="button" class="btn btn-secondary"  (click)="goPrevious()"> << </button>
+                </li>
+                <li class="btn btn-outline-secondary" style="margin-left: 10px;">{{categorys.page}}</li>
+
+                <li style="margin-left: 10px;">
+                    <button type="button" class="btn btn-secondary"  (click)="goNext()"> >> </button>
+                </li>
+            </ul>
+        </div>
+        <!--Phân trang-->
+    </div>
+</div>

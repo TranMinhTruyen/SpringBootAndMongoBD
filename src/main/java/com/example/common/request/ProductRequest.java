@@ -1,7 +1,9 @@
 package com.example.common.request;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
+/**
+ * @author Tran Minh Truyen
+ */
+
 
 public class ProductRequest {
 

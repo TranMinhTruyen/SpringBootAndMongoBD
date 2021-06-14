@@ -1,0 +1,9 @@
+.form-control{
+    height: 70px;
+    width: 50%;
+    font-size: 20px;
+    font-weight: 500;
+    background-color:black;
+    color: white;
+    border-radius: 50px;
+}

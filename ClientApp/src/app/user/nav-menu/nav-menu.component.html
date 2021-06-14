@@ -1,0 +1,117 @@
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+<header>  
+  <nav class="navbar fixed-top navbar-expand-sm bg-dark navbar-dark">
+    <div class="collapse navbar-collapse container" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="navbar-brand" [routerLink]="['/']"><i class="fas fa-shopping-basket"></i> ShoesShop</li>
+
+        <a class="nav-link" [routerLink]="['/']" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active"><i class="	fas fa-home"></i> Trang chủ</a>
+        
+
+        <a class="nav-link" [routerLink]="['/category']" routerLinkActive="active">Danh mục</a>
+
+        <a class="nav-link" [routerLink]="['/brand']" routerLinkActive="active">Thương hiệu</a>
+      
+      </ul>
+    </div>
+
+
+    <div class="flex-sm-row-reverse">
+      <div class="form-inline">
+
+        <button id="btn" type="button" [routerLink]="['/cart']" class="btn btn btn-outline-primary" *ngIf="customerLogin == true">
+          <i class="fas fa-shopping-cart"></i> Giỏ hàng
+        </button>
+
+        <button id="btn" type="button" *ngIf="customerLogin == false" class="btn btn btn-outline-primary" [routerLink]="['/register']">
+          <i class="fas fa-user-plus"></i> Đăng kí
+        </button>
+
+        <button id="btn" type="button" *ngIf="customerLogin == false" class="btn btn btn-outline-primary" (click)="openLoginModal()">
+          <i class="fas fa-sign-in-alt"></i> Đăng nhập
+        </button>
+
+        <button id="btnUserName" type="button" *ngIf="customerLogin == true" [routerLink]="['/profile']" class="btn btn btn-outline-primary">
+          <i class="fas fa-user"></i> {{ customer }}
+        </button>
+
+        <button id="btn" type="button" class="btn btn btn-outline-primary" *ngIf="customerLogin == true" (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i> Đăng xuất
+        </button>
+        
+      </div>
+    </div>
+  </nav>
+</header>
+
+
+<!--Login Modal-->
+<div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header container">
+        <h1>Đăng nhập</h1>
+      </div>
+
+      <div class="modal-body">
+
+        <form [formGroup]="rForm" (ngSubmit)="checkForm(rForm.value)">
+          <div class="container">
+            <div *ngIf="checkSuccess == false" class="alert alert-danger">
+              <strong>Tài khoản hoặc mật khẩu không đúng</strong>
+            </div>
+
+            <div *ngIf="checkActive == false" class="alert alert-danger">
+              <strong>Tài khoản của bạn bị vô hiệu hóa</strong>
+            </div>
+            
+            <div>
+              <label><b>Tên đăng nhập</b></label>
+              <div style="display: flex;">
+                <input type="text" placeholder="Tên đăng nhập" class="form-control" formControlName="username" [(ngModel)]="username">
+              </div>
+
+              <div *ngIf="!rForm.controls['username'].valid && rForm.controls['username'].touched">
+                <br/>
+                <div class="alert alert-danger">
+                  <strong>Tên đăng nhập không được để trống</strong>
+                </div>
+              </div>
+            </div>
+    
+            <br/>
+            
+            <div>
+              <label><b>Mật khẩu</b></label>
+              <div style="display: flex;">
+                <input type="password" class="form-control" placeholder="Mật khẩu" formControlName="pass" [(ngModel)]="password">
+              </div>
+
+              <div *ngIf="!rForm.controls['pass'].valid && rForm.controls['pass'].touched">
+                <br/>
+                <div class="alert alert-danger">
+                  <strong>Mật khẩu không được để trống</strong>
+                </div>
+              </div>
+            </div>
+    
+          </div>
+        </form>
+
+      </div>
+
+      <div class="container" style="padding: 20px">
+        <div class="form-inline">
+          <button id="loginbtn" type="submit" class="form-control btn btn-dark" [disabled]="!rForm.valid" (click)="checkLogin()">Đăng nhập</button>
+          <button id="cancelbtn" type="button" class="form-control btn btn-danger" (click)="toggleLoginModal()">Thoát</button>
+        </div>
+          
+      </div>
+
+    </div>
+  </div>
+</div>
+<!--Login Modal-->
+
+

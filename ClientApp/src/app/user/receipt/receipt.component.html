@@ -1,0 +1,81 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <img src="https://www.flaticon.com/svg/static/icons/svg/34/34627.svg" style="height: 55%; width: 55%;">
+        </div>
+
+        <div class="col-lg-6 container" style="text-align: left;">
+
+            <h2 >Tên khách hàng:<strong style="float: right; color: blue;">{{account.lastName}} {{account.firstName}}</strong></h2>
+            
+            <br/>
+
+            <h4>Địa chỉ:
+                <input style="float: right;" class="form-control" [(ngModel)] ="account.address" type="text">
+            </h4>
+            <br/>
+
+            <h4>Số điện thoại:
+                <input style="float: right;" class="form-control" [(ngModel)] ="account.phoneNumberOfCustomer" type="text">
+            </h4>
+            <br/>
+
+            <h4>Email:
+                <input style="float: right;" class="form-control" [(ngModel)] ="account.email" type="text">
+            </h4>
+
+        </div>
+    </div>
+
+    <h1 style="text-align: center;">HÓA ĐƠN</h1>
+    <br/>
+
+    <table style="width: 100%;">
+        <tr>
+            <th style="width: 45%; text-align: left;">Sản phẩm</th>
+            <th style="width: 20%;">Giá tiền</th>
+            <th style="width: 16%;">Số lượng</th>
+            <th style="width: 29%;">Tổng tiền</th>
+        </tr>
+        <tr *ngFor="let data of result.cartList; index as i;">
+            <td style="text-align: left">{{data.productName}}</td>
+            <td>{{data.price}}</td>
+            <td>{{data.amounts}}</td>
+            <td>{{data.priceTotal}}</td>
+        </tr>
+    </table>
+    <div class="row">
+        <div class="col-lg-7">
+        </div>
+        <div class="col-lg-5">
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Phí ship</h5>
+                </div>
+                <div class="col-md-6">
+                    <h5 style="text-align: center;">{{shipping}}</h5>
+                </div>
+            </div>
+    
+            <hr style="width:100%; height: 2px; color:gray; background-color:gray">
+    
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Tổng số tiền<br/>(đã bao gồm VAT)</h5>
+                </div>
+                <div class="col-md-6">
+                    <h5 style="text-align: center;">{{total}}</h5>
+                </div>
+            </div>
+            <br/>
+
+            <button style="width: 100%;" class="btn btn-primary" (click)="CreateCustomerOrder()">Xác nhận</button>
+
+        </div>
+    </div>
+   
+    
+    
+
+</div>

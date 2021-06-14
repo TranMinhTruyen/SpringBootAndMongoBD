@@ -1,0 +1,68 @@
+<div class="container">
+    <h1>Đăng kí</h1>
+    <p>Vui lòng điền đầy đủ thông tin.</p>
+    <hr>
+    <div class="form-group">
+        <label><b>Username</b></label>
+        <input [(ngModel)]="account.account" type="text" placeholder="Nhập Username" class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label><b>Password</b></label>
+        <input [(ngModel)]="account.pass" type="password" placeholder="Nhập Password" class="form-control">
+    </div>
+    
+    <div class="form-group">
+        <label><b>Nhập lại password</b></label>
+        <input [(ngModel)]="confirmPass" type="password" placeholder="Nhập lại password" class="form-control">
+    </div>
+    
+    <div class="form-group">
+        <label><b>Họ</b></label>
+        <input [(ngModel)]="account.firstName" type="text" placeholder="Họ" class="form-control">
+    </div>
+    
+    <div class="form-group">
+        <label><b>Tên</b></label>
+        <input [(ngModel)]="account.lastName" type="text" placeholder="Tên" class="form-control">
+    </div>
+    
+    <div class="form-group">
+        <label><b>Ngày sinh</b></label>
+        <input [(ngModel)]="account.dateOfBirth" type="date" placeholder="Ngày sinh" class="form-control">
+    </div>
+    
+    <div class="form-group">
+        <label><b>Giới tính</b></label>
+        <select [(ngModel)]="account.gender" class="form-control">
+            <option>Nam</option>
+            <option>Nữ</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label><b>Địa chỉ</b></label>
+        <input [(ngModel)]="account.address" type="text" placeholder="Địa chỉ" class="form-control">
+    </div>
+    
+    <div class="form-group">
+        <label><b>Số điện thoại</b></label>
+        <input [(ngModel)]="account.phoneNumberOfCustomer" type="text" placeholder="Số điện thoại" class="form-control">
+    </div>
+    
+    <div class="form-group">
+        <label><b>Email</b></label>
+        <input [(ngModel)]="account.email" type="text" placeholder="Email" class="form-control">
+    </div>
+    
+    <hr>
+
+    <div class="form-group">
+        <button type="submit" class="registerbtn" (click)="CreateAccount()" [routerLink]="['/']">Đăng kí</button>
+        <button type="submit" class="cancelbtn" [routerLink]="['/']">Huỷ</button>
+    </div>
+</div>
+  
+<div class="container signin">
+    <h4>Bạn đã có tài khoản ? <a (click)="openLoginModal()" [routerLink]="['/']">Đăng nhập</a>.</h4>
+</div>

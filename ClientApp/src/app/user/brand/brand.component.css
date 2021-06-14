@@ -1,0 +1,40 @@
+.row {  
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.side {
+    flex: 10%;
+    background-color: grey;
+    padding: 20px;
+    border-radius: 25px;
+    color: white;
+}
+
+.main {   
+    flex: 70%;
+    background-color: white;
+    padding: 20px;
+}
+
+.card {
+    width: 265px;
+    margin-left: 20px !important;
+    margin-top: 20px !important;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    margin: auto;
+    text-align: center;
+    font-family: arial;
+}
+
+#searchInput{
+    border-bottom-left-radius: 50px;
+    border-top-left-radius: 50px;
+}
+
+#searchButton{
+    border-bottom-right-radius: 50px;
+    border-top-right-radius: 50px;
+    width: 60px;
+}

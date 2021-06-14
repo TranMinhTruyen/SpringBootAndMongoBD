@@ -1,0 +1,56 @@
+<div class="container">
+    <div class="row">
+        <div class="container" id="historycontent">
+
+            <div style="border: solid 2px rgb(255, 102, 0); padding: 15px; border-radius: 20px;">
+
+                
+                <h3 style="color: red;">Mã đơn hàng: {{ id }}</h3>
+
+
+                <div *ngFor="let orderDetail of orderDetail.data;">
+                    <div class="row">
+                        <hr style="width:100%; height: 2px; color:gray; background-color:gray;">
+                        <div class="col-md-3">
+                            <div style="margin-left: 2%;" *ngIf = "orderDetail.picture == 'null'">
+                                <img src="https://lunawood.com/wp-content/uploads/2018/02/placeholder-image.png" alt="Denim Jeans" style="width:100%; height: 100%; border: solid 1px black;">
+                            </div>
+          
+                            <div style="margin-left: 2%;" *ngIf = "orderDetail.picture != 'null'">
+                                <img src="{{orderDetail.picture}}" alt="Shoes" style="width:100%; height: 100%; border: solid 1px black;">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <h3>{{ orderDetail.productName }}</h3>
+                            <h5>Giá tiền: {{ orderDetail.price }}</h5>
+                            <h5>Giảm giá: {{ orderDetail.discount }}%</h5>
+                        </div>
+
+                        <div class="col-md-2">
+                            <h3>Số lượng: {{ orderDetail.amounts }}</h3>
+                        </div>
+
+                        <div class="col-md-4">
+                            <h3 style="text-align: right;">Tổng tiền: {{ orderDetail.totalPrice }} VNĐ</h3>
+                        </div>
+                        <hr style="width:100%; height: 2px; color:gray; background-color:gray;">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <button [routerLink]="['/profile']" class="btn btn-primary">Quay lại</button>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 style="text-align: right;">Tổng cộng: {{ totalPrice }} VNĐ</h3>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+
+        </div>  
+    </div>
+</div>

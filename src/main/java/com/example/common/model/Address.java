@@ -3,6 +3,10 @@ package com.example.common.model;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+/**
+ * @author Tran Minh Truyen
+ */
+
 @Document
 public class Address {
 

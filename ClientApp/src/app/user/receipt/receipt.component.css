@@ -1,0 +1,17 @@
+table, td{
+    text-align: center;
+    border-top: gray solid 3px;
+    border-bottom: gray solid 3px;
+    padding: 20px;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+th {
+    font-size: 20px;
+    color: red;
+    padding: 20px;
+}
+.form-control{
+    width: 350px;
+    font-weight: 500;
+}

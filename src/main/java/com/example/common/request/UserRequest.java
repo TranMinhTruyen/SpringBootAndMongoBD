@@ -2,13 +2,16 @@ package com.example.common.request;
 
 import com.example.common.model.Address;
 import com.example.common.model.Role;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author Tran Minh Truyen
+ */
+
 public class UserRequest {
-    private int id;
+    private String account;
+    private String password;
     private String firstName;
     private String lastName;
     private Date birthDay;
@@ -21,13 +24,31 @@ public class UserRequest {
     public UserRequest() {
     }
 
-
-    public int getId() {
-        return id;
+    public UserRequest(String firstName, String lastName, Date birthDay, Address address, String citizenID, byte[] image, List<Role> role, boolean isActive) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDay = birthDay;
+        this.address = address;
+        this.citizenID = citizenID;
+        this.image = image;
+        this.role = role;
+        this.isActive = isActive;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {

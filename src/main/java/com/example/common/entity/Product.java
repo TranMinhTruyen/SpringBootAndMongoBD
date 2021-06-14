@@ -5,6 +5,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+/**
+ * @author Tran Minh Truyen
+ */
+
 @Entity
 public class Product {
 

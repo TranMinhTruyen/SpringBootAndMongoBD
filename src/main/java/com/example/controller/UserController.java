@@ -1,8 +1,12 @@
 package com.example.controller;
 
+import com.example.common.jwt.JWTTokenProvider;
+import com.example.common.model.CustomUserDetail;
+import com.example.common.model.User;
 import com.example.common.request.LoginRequest;
 import com.example.common.request.UserRequest;
 import com.example.common.response.CommonResponse;
+import com.example.common.response.JwtResponse;
 import com.example.common.response.UserResponse;
 import com.example.services.UserServices;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +36,9 @@ public class UserController {
     @Autowired
     UserServices userServices;
 
+    @Autowired
+    JWTTokenProvider jwtTokenProvider;
+
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
     @PostMapping(value = "createUser", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createUser(@RequestBody UserRequest userRequest) {
@@ -44,11 +51,15 @@ public class UserController {
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
     @PostMapping(value = "login", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        UserResponse userResponse = userServices.Login(loginRequest);
-        if (userResponse != null)
-            return new ResponseEntity<>(userResponse, HttpStatus.OK);
+        User user = userServices.Login(loginRequest);
+        if (user != null){
+            CustomUserDetail customUserDetail = new CustomUserDetail(user);
+            String jwt = jwtTokenProvider.generateToken(customUserDetail);
+            JwtResponse jwtResponse = new JwtResponse(jwt);
+            return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+        }
         else
-            return new ResponseEntity<>("Not found user", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Not found user account", HttpStatus.NOT_FOUND);
     }
 
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))

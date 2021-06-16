@@ -52,4 +52,12 @@ public class CartServices {
 		}
 		else return false;
 	}
+
+	public boolean deleteCart(int id){
+		if (cartRepository.existsById(id)){
+			cartRepository.deleteById(id);
+			return true;
+		}
+		else return false;
+	}
 }

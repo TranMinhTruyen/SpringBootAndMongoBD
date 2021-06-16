@@ -41,7 +41,7 @@ public class User {
     private String citizenId;
 
     @Field(value = "Role")
-    private List<Role> role;
+    private String role;
 
     @Field(value = "Image")
     private byte[] image;
@@ -113,11 +113,11 @@ public class User {
         this.citizenId = citizenId;
     }
 
-    public List<Role> getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(List<Role> role) {
+    public void setRole(String role) {
         this.role = role;
     }
 

@@ -1,15 +1,15 @@
 package com.example.services;
 
-import com.example.common.model.Address;
-import com.example.common.model.AutoIncrement;
-import com.example.common.model.Role;
-import com.example.common.model.User;
+import com.example.common.model.*;
 import com.example.common.request.LoginRequest;
 import com.example.common.request.UserRequest;
 import com.example.common.response.CommonResponse;
 import com.example.common.response.UserResponse;
 import com.example.repository.mongo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -22,7 +22,7 @@ import java.util.Optional;
  */
 
 @Service
-public class UserServices {
+public class UserServices implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
@@ -31,7 +31,6 @@ public class UserServices {
         List<User> last  = new AutoIncrement(userRepository).getLastOfCollection();
         if (userRequest != null)  {
             User newUser = new User();
-            List<Role> newListRole = userRequest.getRole();
             Address newAddress = userRequest.getAddress();
             newUser.setAccount(userRequest.getAccount());
             newUser.setPassword(userRequest.getPassword());
@@ -42,7 +41,7 @@ public class UserServices {
                 newUser.setId(last.get(0).getId()+1);
             else newUser.setId(1);
             newUser.setAddress(newAddress);
-            newUser.setRole(newListRole);
+            newUser.setRole(userRequest.getRole());
             userRepository.save(newUser);
             return true;
         }
@@ -66,11 +65,7 @@ public class UserServices {
 
     public CommonResponse getUserByKeyWord(int page, int size, String keyword){
         CommonResponse commonResponse = new CommonResponse();
-        List<Role> find =new ArrayList<Role>();
-        Role key = new Role();
-        key.setRole(keyword);
-        find.add(key);
-        List result = userRepository.findUserByRoleContains(find);
+        List result = userRepository.findUserByFirstNameContainingOrLastNameContaining(keyword,keyword);
         if (result != null){
             int offset = (page - 1) * size;
             int total = result.size();
@@ -86,19 +81,10 @@ public class UserServices {
         else return getAllUser(page, size);
     }
 
-    public UserResponse Login(LoginRequest loginRequest){
+    public User Login(LoginRequest loginRequest){
         User result = userRepository.findUserByAccountAndPassword(loginRequest.getAccount(), loginRequest.getPassword());
         if (result != null){
-            UserResponse response = new UserResponse();
-            response.setFirstName(result.getFirstName());
-            response.setLastName(result.getLastName());
-            response.setBirthDay(result.getBirthDay());
-            response.setAddress(result.getAddress());
-            response.setCitizenID(result.getCitizenId());
-            response.setImage(result.getImage());
-            response.setRole(result.getRole());
-            response.setActive(result.isActive());
-            return response;
+            return result;
         }
         else return null;
     }
@@ -113,7 +99,6 @@ public class UserServices {
             update.setBirthDay(request.getBirthDay());
             update.setCitizenId(request.getCitizenID());
             update.setImage(request.getImage());
-//            update.setRole(request.getRole());
             update.setActive(request.isActive());
             userRepository.save(update);
             return true;
@@ -128,5 +113,23 @@ public class UserServices {
             return true;
         }
         else return false;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String account) throws UsernameNotFoundException {
+        User user = userRepository.findUserByAccount(account);
+        if (user != null){
+            return new CustomUserDetail(user);
+        }
+        else throw new UsernameNotFoundException("User not found");
+    }
+
+    public UserDetails loadUserById(int id){
+        Optional<User> result = userRepository.findById(id);
+        if (result.isPresent()){
+            User user = result.get();
+            return new CustomUserDetail(user);
+        }
+        else throw new UsernameNotFoundException("User not found with id: " + id);
     }
 }

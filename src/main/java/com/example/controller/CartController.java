@@ -1,11 +1,8 @@
 package com.example.controller;
 
 import com.example.common.request.CartRequest;
-import com.example.common.request.UserRequest;
 import com.example.common.response.CartResponse;
-import com.example.common.response.CommonResponse;
 import com.example.services.CartServices;
-import com.example.services.UserServices;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,8 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.Authenticator;
-
 /**
  * @author Tran Minh Truyen
  */
@@ -33,7 +28,7 @@ import java.net.Authenticator;
 public class CartController {
 
 	@Autowired
-	CartServices cartServices;
+	private CartServices cartServices;
 
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
 			security = {@SecurityRequirement(name = "Authorization")})
@@ -56,7 +51,7 @@ public class CartController {
 
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
 	@GetMapping(value="getCartById")
-	public ResponseEntity<?>getUserByKeyword(@RequestParam int id){
+	public ResponseEntity<?>getCartById(@RequestParam int id){
 		CartResponse cartResponse = cartServices.getCartById(id);
 		if (cartResponse != null){
 			return new ResponseEntity<>(cartResponse, HttpStatus.OK);

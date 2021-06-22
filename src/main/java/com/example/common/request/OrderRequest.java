@@ -1,45 +1,32 @@
-package com.example.common.model;
+package com.example.common.request;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.example.common.model.Cart;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author Tran Minh Truyen
  */
-@Document(collection = "Order")
-public class Order {
+public class OrderRequest {
 
-	@Field(value = "id")
-	private int id;
-
-	@Field(value = "customerId")
 	private int customerId;
-
-	@Field(value = "employeeId")
 	private int employeeId;
-
-	@Field(value = "createDate")
 	private Date createDate;
-
-	@Field(value = "Cart")
 	private Cart cart;
-
-	@Field(value = "totalPrice")
-	private float totalPrice;
-
-	@Field(value = "status")
 	private String status;
 
-	public int getId() {
-		return id;
+	public OrderRequest() {
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public OrderRequest(int customerId, int employeeId, Date createDate, Cart cart, String status) {
+		this.customerId = customerId;
+		this.employeeId = employeeId;
+		this.createDate = createDate;
+		this.cart = cart;
+		this.status = status;
 	}
+
 
 	public int getCustomerId() {
 		return customerId;
@@ -75,14 +62,6 @@ public class Order {
 
 	public String getStatus() {
 		return status;
-	}
-
-	public float getTotalPrice() {
-		return totalPrice;
-	}
-
-	public void setTotalPrice(float totalPrice) {
-		this.totalPrice = totalPrice;
 	}
 
 	public void setStatus(String status) {

@@ -8,5 +8,4 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @author Tran Minh Truyen
  */
 public interface CartRepository extends MongoRepository<Cart, Integer> {
-	Cart findCartById(int id);
 }

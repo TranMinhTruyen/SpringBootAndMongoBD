@@ -7,18 +7,19 @@ package com.example.common.request;
 
 public class ProductRequest {
 
-	private int id;
 	private String name;
 	private Float price;
 	private String type;
 	private byte[] image;
 
-	public int getId() {
-		return id;
+	public ProductRequest(String name, Float price, String type, byte[] image) {
+		this.name = name;
+		this.price = price;
+		this.type = type;
+		this.image = image;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public ProductRequest() {
 	}
 
 	public String getName() {

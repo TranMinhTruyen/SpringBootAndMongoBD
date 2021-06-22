@@ -7,7 +7,6 @@ import com.example.common.request.LoginRequest;
 import com.example.common.request.UserRequest;
 import com.example.common.response.CommonResponse;
 import com.example.common.response.JwtResponse;
-import com.example.common.response.UserResponse;
 import com.example.services.UserServices;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,9 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
-import java.util.List;
-
 /**
  * @author Tran Minh Truyen
  */
@@ -34,10 +30,10 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    UserServices userServices;
+    private UserServices userServices;
 
     @Autowired
-    JWTTokenProvider jwtTokenProvider;
+    private JWTTokenProvider jwtTokenProvider;
 
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
     @PostMapping(value = "createUser", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -52,7 +48,7 @@ public class UserController {
     @PostMapping(value = "login", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         User user = userServices.Login(loginRequest);
-        if (user != null){
+        if (user != null && user.isActive()) {
             CustomUserDetail customUserDetail = new CustomUserDetail(user);
             String jwt = jwtTokenProvider.generateToken(customUserDetail);
             JwtResponse jwtResponse = new JwtResponse(jwt);

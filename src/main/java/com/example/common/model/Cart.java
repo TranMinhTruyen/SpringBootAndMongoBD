@@ -19,7 +19,7 @@ public class Cart {
 	private List<ListProduct> productList;
 
 	@Field(value = "totalPrice")
-	private long totalPrice;
+	private float totalPrice;
 
 	public int getId() {
 		return id;
@@ -37,11 +37,11 @@ public class Cart {
 		this.productList = productList;
 	}
 
-	public long getTotalPrice() {
+	public float getTotalPrice() {
 		return totalPrice;
 	}
 
-	public void setTotalPrice(long totalPrice) {
+	public void setTotalPrice(float totalPrice) {
 		this.totalPrice = totalPrice;
 	}
 

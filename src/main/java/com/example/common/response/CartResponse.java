@@ -9,10 +9,22 @@ import java.util.List;
  * @author Tran Minh Truyen
  */
 public class CartResponse extends CartRequest {
-	public CartResponse(int userId, List<ListProduct> productList, long totalPrice) {
-		super(userId, productList, totalPrice);
+
+	private float totalPrice;
+
+	public CartResponse(int id, List<ListProduct> productList, float totalPrice) {
+		super(id, productList);
+		this.totalPrice = totalPrice;
 	}
 
 	public CartResponse() {
+	}
+
+	public float getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(float totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 }

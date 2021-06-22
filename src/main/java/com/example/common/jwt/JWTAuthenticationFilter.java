@@ -1,7 +1,6 @@
 package com.example.common.jwt;
 
-import com.example.common.model.User;
-import com.example.services.UserServices;
+import com.example.services.ServicesImplement.UserServicesImplement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,7 +27,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	private JWTTokenProvider jwtTokenProvider;
 
 	@Autowired
-	private UserServices userServices;
+	private UserServicesImplement userServicesImplement;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
@@ -39,7 +38,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 			if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
 				int userId = jwtTokenProvider.getUserIdFromJWT(jwt);
 
-				UserDetails userDetails = userServices.loadUserById(userId);
+				UserDetails userDetails = userServicesImplement.loadUserById(userId);
 				if(userDetails != null) {
 					UsernamePasswordAuthenticationToken
 							authentication = new UsernamePasswordAuthenticationToken(userDetails, null,

@@ -27,6 +27,7 @@
     <inspection_tool class="DoubleBraceInitialization" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="DuplicateBranchesInSwitch" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="DuplicateExpressions" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="DuplicatedCode" enabled="true" level="TYPO" enabled_by_default="true" />
     <inspection_tool class="DuplicatedDataProviderNames" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="EnhancedSwitchBackwardMigration" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="EnumSwitchStatementWhichMissesCases" enabled="true" level="WARNING" enabled_by_default="true">

@@ -17,6 +17,8 @@
         <property name="show_sql">true</property>
 
         <mapping class="com.example.common.entity.Product" />
+        <mapping class="com.example.common.entity.Brand" />
+        <mapping class="com.example.common.entity.Category" />
     </session-factory>
 
 </hibernate-configuration>

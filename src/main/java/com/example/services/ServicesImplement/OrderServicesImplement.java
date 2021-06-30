@@ -70,14 +70,26 @@ public class OrderServicesImplement implements OrderServices {
 			update.setCustomerId(orderRequest.getCustomerId());
 			update.setEmployeeId(orderRequest.getEmployeeId());
 			update.setCreateDate(orderRequest.getCreateDate());
-			update.setCart(orderRequest.getCart());
 			update.setStatus(orderRequest.getStatus());
-			update.setTotalPrice(orderRequest.getCart().getTotalPrice());
 			orderRepository.save(update);
 			return true;
 		}
 		else return false;
 	}
+
+
+	@Override
+	public boolean updateCartInOrder(int id, OrderRequest orderRequest) {
+		Optional<Order> order = orderRepository.findById(id);
+		if(order.isPresent()){
+			Order update = order.get();
+			update.setCart(orderRequest.getCart());
+			orderRepository.save(update);
+			return true;
+		}
+		else return false;
+	}
+
 
 	@Override
 	public boolean deleteOrder(int id) {

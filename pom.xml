@@ -109,17 +109,16 @@
       <version>0.9.1</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.liquibase/liquibase-core -->
-    <dependency>
-      <groupId>org.liquibase</groupId>
-      <artifactId>liquibase-core</artifactId>
-      <version>4.4.0</version>
-    </dependency>
-
 
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+    </dependency>
+  
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>5.3.8</version>
     </dependency>
   </dependencies>
 
@@ -128,6 +127,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${project.parent.version}</version>
       </plugin>
     </plugins>
   </build>

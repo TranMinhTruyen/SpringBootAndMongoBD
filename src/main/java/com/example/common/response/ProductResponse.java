@@ -1,26 +1,14 @@
 package com.example.common.response;
 
 import com.example.common.request.ProductRequest;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Tran Minh Truyen
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class ProductResponse extends ProductRequest {
 	private int id;
-
-	public ProductResponse(String name, Float price, String type, byte[] image, int id) {
-		super(name, price, type, image);
-		this.id = id;
-	}
-
-	public ProductResponse() {
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 }

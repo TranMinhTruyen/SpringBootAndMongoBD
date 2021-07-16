@@ -5,9 +5,14 @@ import com.example.common.model.User;
 import com.example.common.request.ProductRequest;
 import com.example.common.response.CommonResponse;
 import com.example.repository.mysql.ProductRepository;
+import com.example.repository.specification.BrandSpecification;
+import com.example.repository.specification.ProductSpecification;
 import com.example.services.ProductServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.criteria.Predicate;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +62,8 @@ public class ProductServicesImplement implements ProductServices {
 	@Override
 	public CommonResponse getProductByKeyWord(int page, int size, String keyword) {
 		CommonResponse commonResponse = new CommonResponse();
-		List result = productRepository.findProductByNameContains(keyword);
+		ProductSpecification specification = new ProductSpecification(keyword);
+		List result = productRepository.findAll(specification);
 		if (result != null){
 			int offset = (page - 1) * size;
 			int total = result.size();

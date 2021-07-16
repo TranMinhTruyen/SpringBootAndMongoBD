@@ -58,7 +58,7 @@ public class ProductController {
 	@GetMapping(value="getProductByKeyword")
 	public ResponseEntity<?>getProductByKeyword(@RequestParam int page,
 												@RequestParam int size,
-												@RequestParam String keyword){
+												@RequestParam(required = false) String keyword){
 		CommonResponse commonResponse = productServices.getProductByKeyWord(page, size, keyword);
 		if (commonResponse != null){
 			return new ResponseEntity<>(commonResponse, HttpStatus.OK);

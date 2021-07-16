@@ -1,5 +1,6 @@
 package com.example.common.model;
 
+import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -8,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  */
 
 @Document
+@Data
 public class Address {
 
     @Field(value = "andress")
@@ -18,30 +20,6 @@ public class Address {
 
     @Field(value = "city")
     private String city;
-
-    public String getAddress() {
-        return andress;
-    }
-
-    public void setAddress(String andress) {
-        this.andress = andress;
-    }
-
-    public String getDistric() {
-        return distric;
-    }
-
-    public void setDistric(String distric) {
-        this.distric = distric;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
 
     @Override
     public String toString() {

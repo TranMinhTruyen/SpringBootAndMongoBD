@@ -1,6 +1,8 @@
 package com.example.common.entity;
 
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -9,6 +11,7 @@ import java.io.Serializable;
  */
 
 @Entity
+@Data
 public class Product implements Serializable {
 
 	@Id
@@ -39,54 +42,10 @@ public class Product implements Serializable {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Float getPrice() {
-		return price;
-	}
-
-	public void setPrice(Float price) {
-		this.price = price;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public byte[] getImage() {
-		return image;
-	}
-
-	public void setImage(byte[] image) {
-		this.image = image;
-	}
-
-	public Category getCategory() {
-		return category;
-	}
-
 	public void setCategory(int category) {
 		Category id = new Category();
 		id.setId(category);
 		this.category = id;
-	}
-
-	public Brand getBrand() {
-		return brand;
 	}
 
 	public void setBrand(int brand) {

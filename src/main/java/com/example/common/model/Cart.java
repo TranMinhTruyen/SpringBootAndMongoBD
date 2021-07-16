@@ -1,5 +1,6 @@
 package com.example.common.model;
 
+import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * @author Tran Minh Truyen
  */
 @Document(collection = "Cart")
+@Data
 public class Cart {
 
 	@Id
@@ -20,30 +22,6 @@ public class Cart {
 
 	@Field(value = "totalPrice")
 	private float totalPrice;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public List<ListProduct> getProductList() {
-		return productList;
-	}
-
-	public void setProductList(List<ListProduct> productList) {
-		this.productList = productList;
-	}
-
-	public float getTotalPrice() {
-		return totalPrice;
-	}
-
-	public void setTotalPrice(float totalPrice) {
-		this.totalPrice = totalPrice;
-	}
 
 	@Override
 	public String toString() {

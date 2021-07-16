@@ -2,6 +2,8 @@ package com.example.common.response;
 
 import com.example.common.model.Address;
 import com.example.common.request.UserRequest;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 import java.util.List;
@@ -9,12 +11,7 @@ import java.util.List;
 /**
  * @author Tran Minh Truyen
  */
-
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class UserResponse extends UserRequest {
-	public UserResponse(String firstName, String lastName, Date birthDay, Address address, String citizenID, byte[] image, String role, boolean isActive) {
-		super(firstName, lastName, birthDay, address, citizenID, image, role, isActive);
-	}
-
-	public UserResponse() {
-	}
 }

@@ -20,5 +20,4 @@
         <mapping class="com.example.common.entity.Brand" />
         <mapping class="com.example.common.entity.Category" />
     </session-factory>
-
 </hibernate-configuration>

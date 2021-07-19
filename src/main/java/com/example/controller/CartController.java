@@ -45,8 +45,13 @@ public class CartController {
 			cartServices.createCart(cartRequest);
 			return new ResponseEntity<>("Cart is added", HttpStatus.OK);
 		}
-		else
-			return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+		else{
+			if (authentication == null){
+				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
+			}
+			else
+				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
@@ -74,8 +79,13 @@ public class CartController {
 			cartServices.updateProductList(cartRequest);
 			return new ResponseEntity<>("Cart is update", HttpStatus.OK);
 		}
-		else
-			return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+		else{
+			if (authentication == null){
+				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
+			}
+			else
+				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
@@ -93,7 +103,12 @@ public class CartController {
 			cartServices.deleteCart(id);
 			return new ResponseEntity<>("Cart is deleted", HttpStatus.OK);
 		}
-		else
-			return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+		else{
+			if (authentication == null){
+				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
+			}
+			else
+				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+		}
 	}
 }

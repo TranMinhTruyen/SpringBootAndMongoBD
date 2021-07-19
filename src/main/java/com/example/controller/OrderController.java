@@ -48,7 +48,13 @@ public class OrderController {
 			else
 				return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
 		}
-		else return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+		else{
+			if (authentication == null){
+				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
+			}
+			else
+				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 
@@ -72,7 +78,13 @@ public class OrderController {
 			}
 			else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
 		}
-		else return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+		else{
+			if (authentication == null){
+				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
+			}
+			else
+				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 
@@ -93,7 +105,13 @@ public class OrderController {
 			}
 			else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
 		}
-		else return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+		else{
+			if (authentication == null){
+				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
+			}
+			else
+				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 
@@ -115,6 +133,12 @@ public class OrderController {
 			}
 			else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
 		}
-		else return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+		else{
+			if (authentication == null){
+				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
+			}
+			else
+				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+		}
 	}
 }

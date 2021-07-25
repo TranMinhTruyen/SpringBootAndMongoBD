@@ -4,6 +4,7 @@ import com.example.repository.mongo.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public class AutoIncrement {
 
 	public List getLastOfCollection(){
 		List last = this.repository.findAll();
-		if (!last.isEmpty()) return last.stream().skip(this.repository.count()-1).toList();
+		if (!last.isEmpty()) return Arrays.asList(last.stream().skip(this.repository.count()-1).toArray());
 		else return null;
 	}
 }

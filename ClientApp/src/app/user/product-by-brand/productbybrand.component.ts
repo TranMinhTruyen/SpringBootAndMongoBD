@@ -1,9 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { isNull } from '@angular/compiler/src/output/output_ast';
 import { Component, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router'; 
 import { CartComponent } from '../cart/cart.component';
-import { ProductByBrandService } from './productbybrand.service';
 
 declare var $: any;
 @Component({
@@ -12,7 +10,7 @@ declare var $: any;
   styleUrls: ['./productbybrand.component.css'],
 })
 export class ProductByBrandComponent {
-  constructor(private http: HttpClient, private productByBrandService: ProductByBrandService, @Inject('BASE_URL') baseUrl: string, private route: ActivatedRoute) {
+  constructor(private http: HttpClient, @Inject('BASE_URL') baseUrl: string, private route: ActivatedRoute) {
   }
   ngOnInit() { 
     this.route.queryParams.subscribe( 
@@ -55,10 +53,36 @@ export class ProductByBrandComponent {
 
   //#region "Tìm sản phẩm"
   SearchProduct() {
-    this.products = this.productByBrandService.getByKeyword(this.size, this.page, this.id)
-        .subscribe(response => console.log(response))
-    if (isNull(this.products)){
-      alert("Không tìm thấy sản phẩm");
+    if (this.page < 0) {
+      alert("Lỗi! Trang không hợp lệ!")
+    }
+    else {
+      this.http.get<any>('https://localhost:44343/api/Product/Get_Product_By_Brand/'  + this.size + ',' + this.page + '?brandID=' + this.id)
+      .subscribe(
+        result => {
+                    var res: any = result;
+                    if (res != null) {
+                      if (this.checkloading == true && this.page > res.totalPage){
+                        if (res.totalRecord > 0){
+                          alert("Trang không tồn tại")
+                        }
+                        else{
+                          this.products = res;
+                        }
+                      }
+                      else{
+                        this.products = res;
+                      }
+                      this.checkloading = true;
+                    }
+                    else {
+                      alert(res.message);
+                    }
+                  },
+        error =>  {
+                    alert("Server error !");
+                  }
+      );
     }
   }
   //#endregion "Tìm sản phẩm"
@@ -89,6 +113,7 @@ export class ProductByBrandComponent {
 
 
   //#region "Thêm vào giỏ hàng"
+  ShoppingCart: CartComponent
   addProductToCart(productID: String, unitsInStock: number)
   {
     try {
@@ -135,7 +160,6 @@ export class ProductByBrandComponent {
   UpdateAmount(productID: String, unitsInStock: number){
     this.amount.productID = productID;
     this.amount.unitsInStock = unitsInStock;
-
     this.http.put('https://localhost:44343/api/Product/Update_Unit_In_Stock/' + productID, this.amount).subscribe(
       result => {
         var res: any = result;

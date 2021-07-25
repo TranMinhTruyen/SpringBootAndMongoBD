@@ -1,8 +1,7 @@
-import { HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router'; 
 import { CartComponent } from '../cart/cart.component';
-import { ProductService } from './product.service';
 
 declare var $: any;
 @Component({
@@ -11,16 +10,16 @@ declare var $: any;
   styleUrls: ['./product.component.css'],
 })
 export class ProductComponent {
-    constructor(private http: HttpClient, private productService:ProductService , @Inject('BASE_URL') baseUrl: string, private route: ActivatedRoute) {
+    constructor(private http: HttpClient, @Inject('BASE_URL') baseUrl: string, private route: ActivatedRoute) {
     }
 
 
-    async ngOnInit() { 
+    ngOnInit() { 
         this.route.queryParams.subscribe( 
         params => { 
-            this.id = params['productID']; 
+            this.id =  params['productID']; 
         });
-        await this.SearchProduct(); 
+        this.SearchProduct(); 
     } 
 
 
@@ -50,48 +49,67 @@ export class ProductComponent {
 
 
     //#region "Tìm sản phẩm"
-    async SearchProduct() {
-        this.products = this.productService.getByKeyword(this.size, this.page, this.id)
-            .subscribe(response => console.log(response))
+    SearchProduct() {
+        if (this.page < 0) {
+        alert("Lỗi! Trang không hợp lệ!")
+        }
+        else {
+        this.http.get<any>('https://localhost:44343/api/Product/Search_Product/' + this.size + ',' + this.page + '?keyword=' + this.id)
+        .subscribe(
+            result => {
+                        var res: any = result;
+                        if (res != null) {
+                            this.products = res;
+                        }
+                    },
+            error =>  {
+                        alert("Server error !");
+                    }
+        );
+        }
     }
     //#endregion "Tìm sản phẩm"
 
 
     //#region "Thêm vào giỏ hàng"
+    ShoppingCart: CartComponent
     addProductToCart(productID: String, unitsInStock: number)
     {
         try {
-            this.cart.account = sessionStorage.getItem('customer');
+        this.cart.account = sessionStorage.getItem('customer');
         }
         catch{
-            this.cart.account = null;
+        this.cart.account = null;
         }
+    
+    
         if (this.cart.account == null){
-            alert("Bạn phải đăng nhập");
-        } else{
-            if (unitsInStock == 0){
-                alert("Sản phẩm hết hàng")
+        alert("Bạn phải đăng nhập");
+        }
+        else{
+        if (unitsInStock == 0){
+            alert("Sản phẩm hết hàng")
+        }
+        else{
+            this.cart.account = sessionStorage.getItem('customer');
+            this.cart.productID = productID;
+            this.http.post('https://localhost:44343/api/Cart/Create_Cart', this.cart).subscribe(
+            result => {
+                var res: any = result;
+                if (res != null){
+                alert("Thêm vào giỏ hàng thành công");
+                this.UpdateAmount(productID,unitsInStock - 1);
+                window.location.reload();
+                }
+                else{
+                alert("Lỗi dữ liệu");
+                }
+            },
+            error =>  {
+                alert("Bạn đã thêm sản phẩm này vào giỏ hàng rồi");
             }
-            else{
-                this.cart.account = sessionStorage.getItem('customer');
-                this.cart.productID = productID;
-                this.http.post('https://localhost:44343/api/Cart/Create_Cart', this.cart).subscribe(
-                    result => {
-                        var res: any = result;
-                        if (res != null){
-                            alert("Thêm vào giỏ hàng thành công");
-                            this.UpdateAmount(productID,unitsInStock - 1);
-                            window.location.reload();
-                        }
-                        else{
-                            alert("Lỗi dữ liệu");
-                        }
-                },
-                    error =>  {
-                        alert("Bạn đã thêm sản phẩm này vào giỏ hàng rồi");
-                    }
-                )
-            }
+            )
+        }
         }
     }
     //#endregion "Thêm vào giỏ hàng"
@@ -111,10 +129,7 @@ export class ProductComponent {
         )
     }
     //#endregion "Cập nhật số lượng khi thêm vào giỏ hàng"
-
     setDefaultPic(event) {
         event.target.src = 'assets/placeholder.png';
     }
 }
-
-

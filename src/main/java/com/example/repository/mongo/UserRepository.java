@@ -13,6 +13,6 @@ import java.util.List;
 @Repository
 public interface UserRepository extends MongoRepository<User, Integer> {
     List findUserByFirstNameContainingOrLastNameContaining(String firstName, String lastName);
-    User findUserByAccountAndPassword(String account, String password);
+    User findUsersByAccountEqualsAndPasswordContains(String account, String password);
     User findUserByAccount(String account);
 }

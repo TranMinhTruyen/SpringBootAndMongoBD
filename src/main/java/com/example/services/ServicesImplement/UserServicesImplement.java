@@ -7,12 +7,15 @@ import com.example.common.response.CommonResponse;
 import com.example.common.response.UserResponse;
 import com.example.repository.mongo.UserRepository;
 import com.example.services.UserServices;
+import com.google.common.hash.Hashing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +33,12 @@ public class UserServicesImplement implements UserDetailsService, UserServices {
 
     @Override
     public boolean createUser(UserRequest userRequest) {
-        List<User> last  = new AutoIncrement(userRepository).getLastOfCollection();
-        if (userRequest != null)  {
+        if (userRequest != null && userRepository.findUserByAccount(userRequest.getAccount()) == null)  {
+            List<User> last  = new AutoIncrement(userRepository).getLastOfCollection();
             User newUser = new User();
             Address newAddress = userRequest.getAddress();
             newUser.setAccount(userRequest.getAccount());
-            newUser.setPassword(userRequest.getPassword());
+            newUser.setPassword(Hashing.sha512().hashString(userRequest.getPassword(), StandardCharsets.UTF_8).toString());
             newUser.setFirstName(userRequest.getFirstName());
             newUser.setLastName(userRequest.getLastName());
             newUser.setBirthDay(userRequest.getBirthDay());
@@ -44,6 +47,7 @@ public class UserServicesImplement implements UserDetailsService, UserServices {
             else newUser.setId(1);
             newUser.setAddress(newAddress);
             newUser.setRole(userRequest.getRole());
+            newUser.setActive(true);
             userRepository.save(newUser);
             return true;
         }
@@ -87,7 +91,7 @@ public class UserServicesImplement implements UserDetailsService, UserServices {
 
     @Override
     public User Login(LoginRequest loginRequest) {
-        User result = userRepository.findUserByAccountAndPassword(loginRequest.getAccount(), loginRequest.getPassword());
+        User result = userRepository.findUsersByAccountEqualsAndPasswordContains(loginRequest.getAccount(), Hashing.sha512().hashString(loginRequest.getPassword(), StandardCharsets.UTF_8).toString());
         if (result != null){
             return result;
         }
@@ -119,6 +123,13 @@ public class UserServicesImplement implements UserDetailsService, UserServices {
             userRepository.deleteById(id);
             return true;
         }
+        else return false;
+    }
+
+    @Override
+    public boolean accountIsExists(String account) {
+        if (userRepository.findUserByAccount(account) != null)
+            return true;
         else return false;
     }
 

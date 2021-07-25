@@ -41,10 +41,13 @@ public class UserController {
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
     @PostMapping(value = "createUser", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createUser(@RequestBody UserRequest userRequest) {
-        if (userServices.createUser(userRequest))
-          return new ResponseEntity<>("User is added", HttpStatus.OK);
-        else
-          return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+        if (!userServices.accountIsExists(userRequest.getAccount())){
+            if (userServices.createUser(userRequest))
+                return new ResponseEntity<>("User is added", HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Error", HttpStatus.FORBIDDEN);
+        }
+        else return new ResponseEntity<>("Account is exists", HttpStatus.FORBIDDEN);
     }
 
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))

@@ -10,8 +10,8 @@
         <module name="SpringBootAndMongoBD" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="SpringBootAndMongoBD" target="16" />
+    <bytecodeTargetLevel target="16">
+      <module name="SpringBootAndMongoBD" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

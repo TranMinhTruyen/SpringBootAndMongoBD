@@ -16,6 +16,7 @@ public interface UserServices {
 	User Login(LoginRequest loginRequest);
 	boolean updateUser(int id, UserRequest request);
 	boolean deleteUser(int id);
+	boolean accountIsExists(String account);
 	UserDetails loadUserByUsername(String account);
 	UserDetails loadUserById(int id);
 }

@@ -48,13 +48,13 @@ public class JWTTokenProvider {
 		return Integer.parseInt(claims.getSubject());
 	}
 
-	public String getRoleFromJWT(String token) {
-		Claims claims = Jwts.parser()
-				.setSigningKey(SECRET)
-				.parseClaimsJws(token)
-				.getBody();
-		return (String) claims.get("role");
-	}
+//	public String getRoleFromJWT(String token) {
+//		Claims claims = Jwts.parser()
+//				.setSigningKey(SECRET)
+//				.parseClaimsJws(token)
+//				.getBody();
+//		return (String) claims.get("role");
+//	}
 
 	public boolean validateToken(String authToken) {
 		try {

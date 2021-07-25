@@ -1,9 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, Pipe } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-import { map } from 'rxjs/operators';
 
 import { AppComponent } from './app.component';
 import { routing } from './app.routing';
@@ -20,7 +19,7 @@ import { AdminModule } from './admin/admin.module';
     ReactiveFormsModule,
     routing,
     AdminModule,
-    UserModule,
+    UserModule
   ],
   providers: [],
   bootstrap: [AppComponent]

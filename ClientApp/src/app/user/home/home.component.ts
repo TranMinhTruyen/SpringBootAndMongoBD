@@ -16,24 +16,8 @@ export class HomeComponent {
     this.brandFilter = "";
     this.categoryFilter = "";
     this.priceFilter = 0;
-    // this.getThucAn();
   }
-  // thucan: any = {
-  //     data: [],
-  //     totalRecord: 0,
-  //     page: 0,
-  //     size: 0,
-  //     totalPage: 0,
-  //   }
-  // getThucAn(){
-  //   this.http.get<any>('http://localhost:8080/api/thucan/getAllThucAn/'+'?page='+1+ '&size=' + 1)
-  //     .subscribe(
-  //       result => {
-  //                   var res: any = result;
-  //                   console.log(res)
-  //                 }
-  //     );
-  // }
+
   //#region "Khai báo các biến"
   isEdit: Boolean = false;
   selectBrand: any = [];

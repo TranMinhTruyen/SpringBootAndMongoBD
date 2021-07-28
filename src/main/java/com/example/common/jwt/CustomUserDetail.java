@@ -1,5 +1,6 @@
-package com.example.common.model;
+package com.example.common.jwt;
 
+import com.example.common.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,9 +22,8 @@ public class CustomUserDetail implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		authorities.add(new SimpleGrantedAuthority(user.getRole()));
-		return authorities;
+		GrantedAuthority authorities = new SimpleGrantedAuthority(user.getRole());
+		return Collections.singleton(authorities);
 	}
 
 	@Override

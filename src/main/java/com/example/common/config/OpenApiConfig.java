@@ -22,7 +22,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Test Application API")
+                        .title("Gaming Gear Application API")
                         .description("OpenAPI 3.0")
                         .contact(new Contact()
                                 .email("tranminhtruyen1410@gmail.com")
@@ -30,7 +30,7 @@ public class OpenApiConfig {
                         .license(new License()
                                 .name("Apache 2.0")
                                 .url("http://www.apache.org/licenses/LICENSE-2.0.html"))
-                        .version("1.0.0"))
+                        .version("0.1.1"))
                 .components(new Components()
                 .addSecuritySchemes("Authorization",
                         new SecurityScheme()

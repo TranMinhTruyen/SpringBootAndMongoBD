@@ -10,4 +10,5 @@ public interface BrandServices {
 	CommonResponse getBrandbyKeyword(int page, int size, String keyword);
 	BrandResponse updateBrand(int id, BrandRequest brandRequest);
 	boolean deleteBrand(int id);
+	boolean isExists(String brandName);
 }

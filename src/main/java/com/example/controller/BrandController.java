@@ -34,15 +34,10 @@ public class BrandController {
 	@PostMapping(value = "createBrand", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createBrand(@RequestBody BrandRequest brandRequest){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null &&
-				(
-						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
-								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
-				)
+		if (authentication != null && (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")))
 		){
-			if (authentication == null){
-				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
-			}
+			if (brandServices.isExists(brandRequest.getName()))
+				return new ResponseEntity<>("Brand is exists", HttpStatus.BAD_REQUEST);
 			if (brandServices.createBrand(brandRequest))
 				return new ResponseEntity<>(brandRequest, HttpStatus.OK);
 			else

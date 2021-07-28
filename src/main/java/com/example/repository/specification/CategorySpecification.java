@@ -1,21 +1,22 @@
 package com.example.repository.specification;
-import com.example.common.entity.Brand;
-import com.example.common.response.BrandResponse;
+
+import com.example.common.entity.Category;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
-public final class BrandSpecification implements Specification<Brand>{
-
+public class CategorySpecification implements Specification<Category> {
 	private String keyword;
 
 	@Override
-	public Predicate toPredicate(Root<Brand> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
+	public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
 		List<Predicate> predicates = new ArrayList<>();
 		if (keyword != null){
 			predicates.add(cb.like(cb.lower(root.get("name").as(String.class)), keyword));

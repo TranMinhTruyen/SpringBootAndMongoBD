@@ -28,7 +28,7 @@ public class ProductServicesImplement implements ProductServices {
 
 	@Override
 	public boolean createProduct(ProductRequest productRequest){
-		if (productRequest != null){
+		if (productRequest != null && !isExists(productRequest.getName())){
 			Product newProduct = new Product();
 			newProduct.setName(productRequest.getName());
 			newProduct.setPrice(productRequest.getPrice());
@@ -42,41 +42,20 @@ public class ProductServicesImplement implements ProductServices {
 
 	@Override
 	public CommonResponse getAllProduct(int page, int size) {
-		CommonResponse commonResponse = new CommonResponse();
 		List result = productRepository.findAll();
 		if (result != null){
-			int offset = (page - 1) * size;
-			int total = result.size();
-			int totalPage = (total%size) == 0 ? (int)(total/size) : (int)((total / size) + 1);
-			Object[] data = result.stream().skip(offset).limit(size).toArray();
-			commonResponse.setData(data);
-			commonResponse.setTotalPage(totalPage);
-			commonResponse.setTotalRecord(total);
-			commonResponse.setPage(page);
-			commonResponse.setSize(size);
-			return commonResponse;
+			return new CommonResponse().getCommonResponse(page, size, result);
 		}
 		else return null;
 	}
 
 	@Override
 	public CommonResponse getProductByKeyWord(int page, int size, String keyword) {
-		CommonResponse commonResponse = new CommonResponse();
-		ProductSpecification specification = new ProductSpecification(keyword);
-		List result = productRepository.findAll(specification);
+		List result = productRepository.findAll(new ProductSpecification(keyword));
 		if (result != null){
-			int offset = (page - 1) * size;
-			int total = result.size();
-			int totalPage = (total%size) == 0 ? (int)(total/size) : (int)((total / size) + 1);
-			Object[] data = result.stream().skip(offset).limit(size).toArray();
-			commonResponse.setData(data);
-			commonResponse.setTotalPage(totalPage);
-			commonResponse.setTotalRecord(total);
-			commonResponse.setPage(page);
-			commonResponse.setSize(size);
-			return commonResponse;
+			return new CommonResponse().getCommonResponse(page, size, result);
 		}
-		else return null;
+		else return getAllProduct(page, size);
 	}
 
 	@Override
@@ -102,5 +81,10 @@ public class ProductServicesImplement implements ProductServices {
 			return true;
 		}
 		else return false;
+	}
+
+	@Override
+	public boolean isExists(String productName) {
+		return !productRepository.findAll(new ProductSpecification(productName)).isEmpty();
 	}
 }

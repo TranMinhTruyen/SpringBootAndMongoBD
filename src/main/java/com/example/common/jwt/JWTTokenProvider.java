@@ -1,9 +1,7 @@
 package com.example.common.jwt;
 
-import com.example.common.model.CustomUserDetail;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

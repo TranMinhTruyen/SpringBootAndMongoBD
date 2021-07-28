@@ -1,7 +1,7 @@
 package com.example.controller;
 
 import com.example.common.jwt.JWTTokenProvider;
-import com.example.common.model.CustomUserDetail;
+import com.example.common.jwt.CustomUserDetail;
 import com.example.common.model.User;
 import com.example.common.request.LoginRequest;
 import com.example.common.request.UserRequest;

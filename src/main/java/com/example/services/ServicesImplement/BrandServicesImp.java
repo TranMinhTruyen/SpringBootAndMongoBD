@@ -23,7 +23,7 @@ public class BrandServicesImp implements BrandServices {
 
 	@Override
 	public boolean createBrand(BrandRequest brandRequest) {
-		if (brandRequest != null){
+		if (brandRequest != null && !isExists(brandRequest.getName())){
 			Brand newBrand = new Brand();
 			newBrand.setName(brandRequest.getName());
 			newBrand.setDescription(brandRequest.getDescription());
@@ -35,39 +35,18 @@ public class BrandServicesImp implements BrandServices {
 
 	@Override
 	public CommonResponse getAllBrand(int page, int size) {
-		CommonResponse commonResponse = new CommonResponse();
 		List<Brand> result = brandRepository.findAll();
 		if (result != null){
-			int offset = (page - 1) * size;
-			int total = result.size();
-			int totalPage = (total%size) == 0 ? (int)(total/size) : (int)((total / size) + 1);
-			Object[] data = result.stream().skip(offset).limit(size).toArray();
-			commonResponse.setData(data);
-			commonResponse.setTotalPage(totalPage);
-			commonResponse.setTotalRecord(total);
-			commonResponse.setPage(page);
-			commonResponse.setSize(size);
-			return commonResponse;
+			return new CommonResponse().getCommonResponse(page, size, result);
 		}
-		return null;
+		else return null;
 	}
 
 	@Override
 	public CommonResponse getBrandbyKeyword(int page, int size, String keyword) {
-		CommonResponse commonResponse = new CommonResponse();
-		BrandSpecification specification = new BrandSpecification(keyword);
-		List<Brand> result = brandRepository.findAll(specification);
+		List<Brand> result = brandRepository.findAll(new BrandSpecification(keyword));
 		if (result != null){
-			int offset = (page - 1) * size;
-			int total = result.size();
-			int totalPage = (total%size) == 0 ? (int)(total/size) : (int)((total / size) + 1);
-			Object[] data = result.stream().skip(offset).limit(size).toArray();
-			commonResponse.setData(data);
-			commonResponse.setTotalPage(totalPage);
-			commonResponse.setTotalRecord(total);
-			commonResponse.setPage(page);
-			commonResponse.setSize(size);
-			return commonResponse;
+			return new CommonResponse().getCommonResponse(page, size, result);
 		}
 		return getAllBrand(page, size);
 	}
@@ -94,6 +73,11 @@ public class BrandServicesImp implements BrandServices {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isExists(String brandName) {
+		return !brandRepository.findAll(new BrandSpecification(brandName)).isEmpty();
 	}
 
 	private boolean update (int id, BrandRequest brandRequest){

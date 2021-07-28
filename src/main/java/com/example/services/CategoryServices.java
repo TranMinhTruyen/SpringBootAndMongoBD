@@ -10,4 +10,5 @@ public interface CategoryServices {
 	CommonResponse getCategoryByKeyword(int page, int size, String keyword);
 	CategoryResponse updateCategory(int id, CategoryRequest categoryRequest);
 	boolean deleteCategory(int id);
+	boolean isExists(String categoryName);
 }

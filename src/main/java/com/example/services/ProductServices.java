@@ -15,4 +15,5 @@ public interface ProductServices {
 	CommonResponse getProductByKeyWord(int page, int size, String keyword);
 	boolean updateProduct(int id, ProductRequest productRequest);
 	boolean deleteProduct(int id);
+	boolean isExists(String productName);
 }

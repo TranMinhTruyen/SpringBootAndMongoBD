@@ -45,6 +45,8 @@ public class ProductController {
 								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
 				)
 		){
+			if (productServices.isExists(productRequest.getName()))
+				return new ResponseEntity<>("Product is exists", HttpStatus.BAD_REQUEST);
 			if (productServices.createProduct(productRequest))
 				return new ResponseEntity<>(productRequest, HttpStatus.OK);
 			else
@@ -104,12 +106,8 @@ public class ProductController {
 	@DeleteMapping(value = "deleteProduct")
 	public ResponseEntity<?>deleteProduct(@RequestParam int id){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null &&
-				(
-						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
-								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
-				)
-		){
+		if (authentication != null && (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))))
+		{
 			if (productServices.deleteProduct(id)){
 				return new ResponseEntity<>("product is deleted", HttpStatus.OK);
 			}

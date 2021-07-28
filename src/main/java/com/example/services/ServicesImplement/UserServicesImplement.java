@@ -1,10 +1,10 @@
 package com.example.services.ServicesImplement;
 
+import com.example.common.jwt.CustomUserDetail;
 import com.example.common.model.*;
 import com.example.common.request.LoginRequest;
 import com.example.common.request.UserRequest;
 import com.example.common.response.CommonResponse;
-import com.example.common.response.UserResponse;
 import com.example.repository.mongo.UserRepository;
 import com.example.services.UserServices;
 import com.google.common.hash.Hashing;
@@ -12,12 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,18 +53,11 @@ public class UserServicesImplement implements UserDetailsService, UserServices {
 
     @Override
     public CommonResponse getAllUser(int page, int size){
-        CommonResponse commonResponse = new CommonResponse();
         List result = userRepository.findAll();
-        int offset = (page - 1) * size;
-        int total = result.size();
-        int totalPage = (total%size) == 0 ? (int)(total/size) : (int)((total / size) + 1);
-        Object[] data = result.stream().skip(offset).limit(size).toArray();
-        commonResponse.setData(data);
-        commonResponse.setTotalPage(totalPage);
-        commonResponse.setTotalRecord(total);
-        commonResponse.setPage(page);
-        commonResponse.setSize(size);
-        return commonResponse;
+        if (result != null){
+            return new CommonResponse().getCommonResponse(page, size, result);
+        }
+        return null;
     }
 
     @Override
@@ -75,16 +65,7 @@ public class UserServicesImplement implements UserDetailsService, UserServices {
         CommonResponse commonResponse = new CommonResponse();
         List result = userRepository.findUserByFirstNameContainingOrLastNameContaining(keyword,keyword);
         if (result != null){
-            int offset = (page - 1) * size;
-            int total = result.size();
-            int totalPage = (total%size) == 0 ? (int)(total/size) : (int)((total / size) + 1);
-            Object[] data = result.stream().skip(offset).limit(size).toArray();
-            commonResponse.setData(data);
-            commonResponse.setTotalPage(totalPage);
-            commonResponse.setTotalRecord(total);
-            commonResponse.setPage(page);
-            commonResponse.setSize(size);
-            return commonResponse;
+            return new CommonResponse().getCommonResponse(page, size, result);
         }
         else return getAllUser(page, size);
     }

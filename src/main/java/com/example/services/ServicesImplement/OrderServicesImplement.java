@@ -46,18 +46,8 @@ public class OrderServicesImplement implements OrderServices {
 	@Override
 	public CommonResponse getOrderByCustomerId(int page, int size, int id) {
 		List result = orderRepository.findOrderByCustomerId(id);
-		if (result != null) {
-			CommonResponse commonResponse = new CommonResponse();
-			int offset = (page - 1) * size;
-			int total = result.size();
-			int totalPage = (total%size) == 0 ? (int)(total/size) : (int)((total / size) + 1);
-			Object[] data = result.stream().skip(offset).limit(size).toArray();
-			commonResponse.setData(data);
-			commonResponse.setTotalPage(totalPage);
-			commonResponse.setTotalRecord(total);
-			commonResponse.setPage(page);
-			commonResponse.setSize(size);
-			return commonResponse;
+		if (result != null){
+			return new CommonResponse().getCommonResponse(page, size, result);
 		}
 		else return null;
 	}

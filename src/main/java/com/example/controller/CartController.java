@@ -32,8 +32,8 @@ public class CartController {
 
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
 			security = {@SecurityRequirement(name = "Authorization")})
-	@PostMapping(value = "createCart", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createCart(@RequestBody CartRequest cartRequest) {
+	@PostMapping(value = "createCartAndAddProductToCart")
+	public ResponseEntity<?> createCartAndAddProductToCart(@RequestParam int customerId, @RequestParam int productId) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null &&
 				(
@@ -42,16 +42,11 @@ public class CartController {
 						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
 				)
 		){
-			cartServices.createCart(cartRequest);
-			return new ResponseEntity<>("Cart is added", HttpStatus.OK);
+			if (cartServices.addProductToCart(customerId, productId))
+				return new ResponseEntity<>("Cart is added", HttpStatus.OK);
+			else return new ResponseEntity<>("Error", HttpStatus.OK);
 		}
-		else{
-			if (authentication == null){
-				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
-			}
-			else
-				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
-		}
+		else return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
 	}
 
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
@@ -66,8 +61,10 @@ public class CartController {
 
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
 			security = {@SecurityRequirement(name = "Authorization")})
-	@PutMapping(value = "updateProductList", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?>updateProductList(@RequestBody CartRequest cartRequest) {
+	@PutMapping(value = "updateProductAmount")
+	public ResponseEntity<?>updateProductAmount(@RequestParam int customerId,
+												@RequestParam int productId,
+												@RequestParam long amount) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null &&
 				(
@@ -76,15 +73,33 @@ public class CartController {
 								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
 				)
 		){
-			cartServices.updateProductList(cartRequest);
-			return new ResponseEntity<>("Cart is update", HttpStatus.OK);
+			if (cartServices.updateProductAmount(customerId, productId, amount))
+				return new ResponseEntity<>("Product amount is updated", HttpStatus.OK);
+			else return new ResponseEntity<>("Error", HttpStatus.NOT_FOUND);
 		}
 		else{
-			if (authentication == null){
-				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
-			}
-			else
-				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+		}
+	}
+
+	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
+			security = {@SecurityRequirement(name = "Authorization")})
+	@DeleteMapping(value = "removeProductFromCart")
+	public ResponseEntity<?>updateProductList(@RequestParam int customerId, @RequestParam int productId) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null &&
+				(
+						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
+								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER")) ||
+								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
+				)
+		){
+		 	if(cartServices.removeProductFromCart(customerId, productId))
+				return new ResponseEntity<>("Product is removed", HttpStatus.OK);
+		 	else return new ResponseEntity<>("Error", HttpStatus.NOT_FOUND);
+		}
+		else{
+			return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
 		}
 	}
 

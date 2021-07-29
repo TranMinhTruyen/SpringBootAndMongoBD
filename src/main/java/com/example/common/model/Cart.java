@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.*;
+import javax.persistence.Id;
 import java.util.List;
 
 /**
@@ -14,7 +14,6 @@ import java.util.List;
 @Data
 public class Cart {
 
-	@Id
 	private int id;
 
 	@Field(value = "productName")

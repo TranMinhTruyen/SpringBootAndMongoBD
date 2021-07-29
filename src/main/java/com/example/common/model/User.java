@@ -18,7 +18,6 @@ import java.util.List;
 @Data
 public class User {
 
-    @Field(value = "id")
     private int id;
 
     @Field(value = "Account")

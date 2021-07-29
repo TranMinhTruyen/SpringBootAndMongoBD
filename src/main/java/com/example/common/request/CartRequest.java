@@ -11,6 +11,6 @@ import java.util.List;
  */
 @Data
 public class CartRequest {
-	private int id;
+	private int customerId;
 	private List<ListProduct> productList;
 }

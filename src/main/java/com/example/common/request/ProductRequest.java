@@ -8,10 +8,8 @@ import lombok.Data;
 
 @Data
 public class ProductRequest {
-
 	private String name;
 	private Float price;
 	private String type;
 	private byte[] image;
-
 }

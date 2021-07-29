@@ -1,5 +1,6 @@
 package com.example.common.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -10,7 +11,11 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document
 @Data
+@AllArgsConstructor
 public class ListProduct {
+
+	@Field(value = "productId")
+	private int id;
 
 	@Field(value = "productName")
 	private String productName;
@@ -20,4 +25,7 @@ public class ListProduct {
 
 	@Field(value = "productQuatity")
 	private long productAmount;
+
+	public ListProduct() {
+	}
 }

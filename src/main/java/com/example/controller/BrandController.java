@@ -107,7 +107,7 @@ public class BrandController {
 				)
 		){
 			if (brandServices.deleteBrand(id)){
-				return new ResponseEntity<>("product is deleted", HttpStatus.OK);
+				return new ResponseEntity<>("category is deleted", HttpStatus.OK);
 			}
 			else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
 		}

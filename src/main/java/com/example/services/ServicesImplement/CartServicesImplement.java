@@ -1,14 +1,19 @@
 package com.example.services.ServicesImplement;
 
+import com.example.common.entity.Product;
 import com.example.common.model.Cart;
 import com.example.common.model.ListProduct;
+import com.example.common.model.User;
 import com.example.common.request.CartRequest;
 import com.example.common.response.CartResponse;
 import com.example.repository.mongo.CartRepository;
+import com.example.repository.mongo.UserRepository;
+import com.example.repository.mysql.ProductRepository;
 import com.example.services.CartServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,17 +26,25 @@ public class CartServicesImplement implements CartServices {
 	@Autowired
 	private CartRepository cartRepository;
 
+	@Autowired
+	private ProductRepository productRepository;
+
+	@Autowired
+	private UserRepository userRepository;
+
 	@Override
-	public boolean createCart(CartRequest cartRequest){
-		if (cartRequest != null && !cartRepository.existsById(cartRequest.getId())){
+	public boolean createCart(int customerId, int productId){
+		Optional<Product> productResult = productRepository.findById(productId);
+		Optional<User> userResult = userRepository.findById(customerId);
+		Optional<Cart> cartResult = cartRepository.findById(customerId);
+		if (productResult.isPresent() && userResult.isPresent() && !cartResult.isPresent()){
 			Cart newCart = new Cart();
-			float totalPrice = 0;
-			newCart.setId(cartRequest.getId());
-			newCart.setProductList(cartRequest.getProductList());
-			for (ListProduct c: cartRequest.getProductList()){
-				totalPrice += c.getProductPrice() * c.getProductAmount();
-			}
-			newCart.setTotalPrice(totalPrice);
+			List <ListProduct> listProducts = new ArrayList<>();
+			Product product = productResult.get();
+			listProducts.add(new ListProduct(product.getId(), product.getName(), product.getPrice(), 1));
+			newCart.setId(userResult.get().getId());
+			newCart.setProductList(listProducts);
+			newCart.setTotalPrice(product.getPrice());
 			cartRepository.save(newCart);
 			return true;
 		}
@@ -43,7 +56,7 @@ public class CartServicesImplement implements CartServices {
 		Optional<Cart> result = cartRepository.findById(id);
 		if (result.isPresent()){
 			CartResponse cartResponse = new CartResponse();
-			cartResponse.setId(result.get().getId());
+			cartResponse.setCustomerId(result.get().getId());
 			cartResponse.setProductList(result.get().getProductList());
 			cartResponse.setTotalPrice(result.get().getTotalPrice());
 			return cartResponse;
@@ -52,15 +65,28 @@ public class CartServicesImplement implements CartServices {
 	}
 
 	@Override
-	public boolean updateProductList(CartRequest cartRequest){
-		Optional<Cart> result = cartRepository.findById(cartRequest.getId());
-		if (result.isPresent()){
-			Cart update = result.get();
-			update.setProductList(cartRequest.getProductList());
+	public boolean updateProductAmount(int customerId, int productId, long amount) {
+		Optional<Cart> cartResult = cartRepository.findById(customerId);
+		Optional<User> userResult = userRepository.findById(customerId);
+		if (cartResult.isPresent() && userResult.isPresent()){
+			float totalPrice = 0;
+			Cart update = cartResult.get();
+			List<ListProduct> list = update.getProductList();
+			for (ListProduct items: list){
+				if (items.getId() == productId){
+					items.setProductAmount(amount);
+					break;
+				}
+			}
+			for (ListProduct c: update.getProductList()){
+				totalPrice += c.getProductPrice() * c.getProductAmount();
+			}
+			update.setProductList(list);
+			update.setTotalPrice(totalPrice);
 			cartRepository.save(update);
 			return true;
 		}
-		else return false;
+		return false;
 	}
 
 	@Override
@@ -70,5 +96,78 @@ public class CartServicesImplement implements CartServices {
 			return true;
 		}
 		else return false;
+	}
+
+	@Override
+	public boolean addProductToCart(int customerId, int productId) {
+		Optional<Cart> cartResult = cartRepository.findById(customerId);
+		Optional<Product> productResult = productRepository.findById(productId);
+		Optional<User> userResult = userRepository.findById(customerId);
+		boolean isProductExists = false;
+		float totalPrice = 0;
+		if (cartResult.isPresent() && productResult.isPresent() && userResult.isPresent()){
+			Cart cart = cartResult.get();
+			Product product = productResult.get();
+			List<ListProduct> productInCart = cart.getProductList();
+
+			for (ListProduct items: productInCart){
+				if (items.getId() == productId){
+					isProductExists = true;
+					break;
+				}
+			}
+			if (!isProductExists){
+				productInCart.add(new ListProduct(product.getId(), product.getName(), product.getPrice(), 1));
+				for (ListProduct c: productInCart){
+					totalPrice += c.getProductPrice() * c.getProductAmount();
+				}
+				cart.setId(userResult.get().getId());
+				cart.setProductList(productInCart);
+				cart.setTotalPrice(totalPrice);
+				cartRepository.save(cart);
+				return true;
+			}
+			else {
+				for (ListProduct items: productInCart){
+					if (items.getId() == productId){
+						items.setProductAmount(items.getProductAmount() + 1);
+						break;
+					}
+				}
+				for (ListProduct c: productInCart){
+					totalPrice += c.getProductPrice() * c.getProductAmount();
+				}
+				cart.setId(userResult.get().getId());
+				cart.setProductList(productInCart);
+				cart.setTotalPrice(totalPrice);
+				cartRepository.save(cart);
+				return true;
+			}
+		}
+		else return createCart(customerId, productId);
+	}
+
+	@Override
+	public boolean removeProductFromCart(int customerId, int productId) {
+		Optional<Cart> result = cartRepository.findById(customerId);
+		if (result.isPresent()){
+			float totalPrice = 0;
+			Cart update = result.get();
+			List<ListProduct> list = update.getProductList();
+			for (ListProduct items: list){
+				if (items.getId() == productId){
+					list.remove(items);
+					break;
+				}
+			}
+			for (ListProduct c: update.getProductList()){
+				totalPrice += c.getProductPrice() * c.getProductAmount();
+			}
+			update.setTotalPrice(totalPrice);
+			update.setProductList(list);
+			cartRepository.save(update);
+			return true;
+		}
+		return false;
 	}
 }

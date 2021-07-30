@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -60,8 +61,11 @@ public class ProductController {
 	@GetMapping(value="getProductByKeyword")
 	public ResponseEntity<?>getProductByKeyword(@RequestParam int page,
 												@RequestParam int size,
-												@RequestParam(required = false) String keyword){
-		CommonResponse commonResponse = productServices.getProductByKeyWord(page, size, keyword);
+												@RequestParam(required = false) String name,
+												@RequestParam(required = false) String brand,
+												@RequestParam(required = false) String category,
+												@RequestParam(required = false, defaultValue = "0") float price){
+		CommonResponse commonResponse = productServices.getProductByKeyWord(page, size, name, brand, category, price);
 		if (commonResponse != null){
 			return new ResponseEntity<>(commonResponse, HttpStatus.OK);
 		}

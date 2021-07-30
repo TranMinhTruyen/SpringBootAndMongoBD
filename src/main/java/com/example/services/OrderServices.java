@@ -13,6 +13,5 @@ public interface OrderServices {
 	boolean createOrder(OrderRequest orderRequest);
 	CommonResponse getOrderByCustomerId(int page, int size, int id);
 	boolean updateOrder(int id, OrderRequest orderRequest);
-	boolean updateCartInOrder(int id, OrderRequest orderRequest);
 	boolean deleteOrder(int id);
 }

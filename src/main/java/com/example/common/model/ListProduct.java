@@ -23,9 +23,9 @@ public class ListProduct {
 	@Field(value = "productPrice")
 	private float productPrice;
 
+	@Field(value = "Discount")
+	private float discount;
+
 	@Field(value = "productQuatity")
 	private long productAmount;
-
-	public ListProduct() {
-	}
 }

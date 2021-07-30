@@ -38,8 +38,7 @@ public class CartController {
 		if (authentication != null &&
 				(
 				authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
-						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER")) ||
-						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
+						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){
 			if (cartServices.addProductToCart(customerId, productId))
@@ -69,8 +68,7 @@ public class CartController {
 		if (authentication != null &&
 				(
 						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
-								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER")) ||
-								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
+								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){
 			if (cartServices.updateProductAmount(customerId, productId, amount))
@@ -90,8 +88,7 @@ public class CartController {
 		if (authentication != null &&
 				(
 						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
-								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER")) ||
-								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
+								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){
 		 	if(cartServices.removeProductFromCart(customerId, productId))
@@ -111,8 +108,7 @@ public class CartController {
 		if (authentication != null &&
 				(
 						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
-								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER")) ||
-								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
+								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){
 			cartServices.deleteCart(id);

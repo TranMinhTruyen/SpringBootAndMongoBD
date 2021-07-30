@@ -39,7 +39,6 @@ public class OrderController {
 		if (authentication != null &&
 				(
 						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
-								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP")) ||
 								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){
@@ -124,7 +123,6 @@ public class OrderController {
 		if (authentication != null &&
 				(
 						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
-								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP")) ||
 								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){

@@ -27,30 +27,37 @@ public class Product implements Serializable {
 	@Column
 	private String type;
 
-	@ManyToOne()
-	@JoinColumn(name = "ID_CATEGORY", nullable = true)
-	private Category category;
+	@Column
+	private float discount;
 
 	@ManyToOne()
 	@JoinColumn(name = "ID_BRAND", nullable = true)
 	private Brand brand;
 
+	@ManyToOne()
+	@JoinColumn(name = "ID_CATEGORY", nullable = true)
+	private Category category;
+
 	@Column
 	private byte[] image;
 
-	public int getId() {
-		return id;
-	}
+//	public String getCategory() {
+//		return category.getName();
+//	}
+//
+//	public String getBrand() {
+//		return brand.getName();
+//	}
 
-	public void setCategory(int category) {
-		Category id = new Category();
-		id.setId(category);
-		this.category = id;
-	}
-
-	public void setBrand(int brand) {
-		Brand id = new Brand();
-		id.setId(brand);
-		this.brand = id;
-	}
+	//	public void setCategory(int category) {
+//		Category id = new Category();
+//		id.setId(category);
+//		this.category = id;
+//	}
+//
+//	public void setBrand(int brand) {
+//		Brand id = new Brand();
+//		id.setId(brand);
+//		this.brand = id;
+//	}
 }

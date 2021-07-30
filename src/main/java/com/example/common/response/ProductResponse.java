@@ -7,8 +7,14 @@ import lombok.EqualsAndHashCode;
 /**
  * @author Tran Minh Truyen
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class ProductResponse extends ProductRequest {
+public class ProductResponse {
 	private int id;
+	private String name;
+	private Float price;
+	private String type;
+	private float discount;
+	private String brand;
+	private String category;
+	private byte[] image;
 }

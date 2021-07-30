@@ -16,7 +16,7 @@ public class Cart {
 
 	private int id;
 
-	@Field(value = "productName")
+	@Field(value = "productList")
 	private List<ListProduct> productList;
 
 	@Field(value = "totalPrice")

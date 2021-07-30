@@ -14,7 +14,6 @@ import java.util.List;
 @Data
 public class Order {
 
-	@Field(value = "id")
 	private int id;
 
 	@Field(value = "customerId")
@@ -27,10 +26,13 @@ public class Order {
 	private Date createDate;
 
 	@Field(value = "Cart")
-	private Cart cart;
+	private List<ListProduct> listProducts;
 
 	@Field(value = "totalPrice")
 	private float totalPrice;
+
+	@Field(value = "Andress")
+	private String andress;
 
 	@Field(value = "status")
 	private String status;

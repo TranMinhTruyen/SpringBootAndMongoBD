@@ -11,9 +11,7 @@ import java.util.Date;
  */
 @Data
 public class OrderRequest {
-	private int customerId;
 	private int employeeId;
 	private String andress;
-	private Date createDate;
 	private String status;
 }

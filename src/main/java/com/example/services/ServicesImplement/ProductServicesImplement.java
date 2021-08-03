@@ -42,7 +42,7 @@ public class ProductServicesImplement implements ProductServices {
 	private CategoryRepository categoryRepository;
 
 	@Override
-	public boolean createProduct(ProductRequest productRequest){
+	public ProductResponse createProduct(ProductRequest productRequest){
 		Optional<Brand> brand = brandRepository.findById(productRequest.getId_brand());
 		Optional<Category> category = categoryRepository.findById(productRequest.getId_category());
 		if (productRequest != null && !isExists(productRequest.getName()) && brand.isPresent() && category.isPresent()){
@@ -54,10 +54,13 @@ public class ProductServicesImplement implements ProductServices {
 			newProduct.setBrand(brand.get());
 			newProduct.setCategory(category.get());
 			newProduct.setImage(productRequest.getImage());
-			productRepository.save(newProduct);
-			return true;
+			newProduct.setUnitInStock(productRequest.getUnitInStock());
+			Product result = productRepository.save(newProduct);
+			if (result != null)
+				return getProductAfterUpdateOrCreate(result);
+			else return null;
 		}
-		else return false;
+		else return null;
 	}
 
 	@Override
@@ -92,19 +95,22 @@ public class ProductServicesImplement implements ProductServices {
 	}
 
 	@Override
-	public boolean updateProduct(int id, ProductRequest productRequest) {
+	public ProductResponse updateProduct(int id, ProductRequest productRequest) {
 		Optional<Product> product = productRepository.findById(id);
 		if (product.isPresent()){
 			Product update = product.get();
 			update.setName(productRequest.getName());
 			update.setType(productRequest.getType());
 			update.setPrice(productRequest.getPrice());
+			update.setUnitInStock(productRequest.getUnitInStock());
 			update.setImage(productRequest.getImage());
 			update.setDiscount(productRequest.getDiscount());
-			productRepository.save(update);
-			return true;
+			Product result = productRepository.save(update);
+			if (result != null)
+				return getProductAfterUpdateOrCreate(result);
+			else return null;
 		}
-		return false;
+		return null;
 	}
 
 	@Override
@@ -145,6 +151,21 @@ public class ProductServicesImplement implements ProductServices {
 	@Override
 	public boolean isExists(String productName) {
 		return !productRepository.findAll(new ProductSpecification(productName)).isEmpty();
+	}
+
+	public ProductResponse getProductAfterUpdateOrCreate(Product product){
+		ProductResponse response = new ProductResponse();
+		response.setId(product.getId());
+		response.setName(product.getName());
+		response.setPrice(product.getPrice());
+		response.setDiscount(product.getDiscount());
+		response.setCategory(product.getCategory().getName());
+		response.setBrand(product.getBrand().getName());
+		response.setUnitInStock(product.getUnitInStock());
+		response.setType(product.getType());
+		response.setDiscount(product.getDiscount());
+		response.setImage(product.getImage());
+		return response;
 	}
 
 	private List<ProductResponse> filterProduct(@Nullable String name,

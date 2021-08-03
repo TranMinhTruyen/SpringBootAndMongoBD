@@ -11,4 +11,5 @@ import java.util.List;
 public interface OrderRepository extends MongoRepository<Order, Integer> {
 	List findOrderByCustomerId(int customerId);
 	Order findOrderById(int id);
+	Order findOrderByIdAndCustomerId(int id, int customerId);
 }

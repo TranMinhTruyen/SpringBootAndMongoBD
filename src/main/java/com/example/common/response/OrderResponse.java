@@ -21,4 +21,5 @@ public class OrderResponse{
 	private List<ListProduct> listProducts;
 	private float totalPrice;
 	private String status;
+	private String andress;
 }

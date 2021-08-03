@@ -1,8 +1,13 @@
 package com.example.controller;
 
+import com.example.common.jwt.CustomUserDetail;
+import com.example.common.model.Order;
 import com.example.common.request.OrderRequest;
 import com.example.common.request.ProductRequest;
+import com.example.common.request.UserOrderRequest;
 import com.example.common.response.CommonResponse;
+import com.example.common.response.OrderResponse;
+import com.example.services.CartServices;
 import com.example.services.OrderServices;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,10 +36,13 @@ public class OrderController {
 	@Autowired
 	private OrderServices orderServices;
 
+	@Autowired
+	private CartServices cartServices;
+
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
 			security = {@SecurityRequirement(name = "Authorization")})
-	@PostMapping(value = "createOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createOrder(@RequestBody OrderRequest orderRequest){
+	@PostMapping(value = "createOrder")
+	public ResponseEntity<?> createOrder(){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null &&
 				(
@@ -42,10 +50,19 @@ public class OrderController {
 								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){
-			if (orderServices.createOrder(orderRequest))
-				return new ResponseEntity<>(orderRequest, HttpStatus.OK);
-			else
-				return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+			CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+			if (!cartServices.isCartExists(customUserDetail.getUser().getId())){
+				return new ResponseEntity<>("Not found cart", HttpStatus.NOT_FOUND);
+			}
+			else {
+				OrderResponse orderResponse = orderServices.createOrder(customUserDetail.getUser().getId());
+				if (orderResponse != null) {
+					cartServices.deleteCart(customUserDetail.getUser().getId());
+					return new ResponseEntity<>(orderResponse, HttpStatus.OK);
+				}
+				else
+					return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+			}
 		}
 		else{
 			if (authentication == null){
@@ -59,10 +76,33 @@ public class OrderController {
 
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
 			security = {@SecurityRequirement(name = "Authorization")})
-	@GetMapping(value="getOrderByCustomerId")
+	@GetMapping(value="user/getOrder")
+	public ResponseEntity<?>getOrder(@RequestParam int page, @RequestParam int size){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null &&
+				(
+						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
+								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
+				)
+		){
+			CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+			CommonResponse commonResponse = orderServices.getOrderByCustomerId(page, size, customUserDetail.getUser().getId());
+			if (commonResponse != null){
+				return new ResponseEntity<>(commonResponse, HttpStatus.OK);
+			}
+			else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+		}
+		else
+			return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+	}
+
+
+	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
+			security = {@SecurityRequirement(name = "Authorization")})
+	@GetMapping(value="emp/getOrderByCustomerId")
 	public ResponseEntity<?>getOrderByCustomerId(@RequestParam int page,
-												@RequestParam int size,
-												@RequestParam int id){
+												 @RequestParam int size,
+												 @RequestParam int id){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null &&
 				(
@@ -77,40 +117,55 @@ public class OrderController {
 			}
 			else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
 		}
-		else{
-			if (authentication == null){
-				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
-			}
-			else
-				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
-		}
+		else
+			return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
 	}
 
 
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
 			security = {@SecurityRequirement(name = "Authorization")})
-	@PutMapping(value = "updateOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?>updateOrder(@RequestParam int id, @RequestBody OrderRequest orderRequest) {
+	@PutMapping(value = "user/userUpdateOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?>userUpdateOrder(@RequestBody UserOrderRequest userOrderRequest) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null &&
 				(
 						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
-								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP")) ||
 								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){
+			CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+			OrderRequest orderRequest = new OrderRequest();
+			orderRequest.setAndress(userOrderRequest.getAndress());
+			if (orderServices.updateOrder(customUserDetail.getUser().getId(), orderRequest)){
+				return new ResponseEntity<>(orderRequest, HttpStatus.OK);
+			}
+			else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+		}
+		else
+			return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+	}
+
+
+	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
+			security = {@SecurityRequirement(name = "Authorization")})
+	@PutMapping(value = "emp/empUpdateOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?>empUpdateOrder(@RequestParam int id, @RequestBody OrderRequest orderRequest) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null &&
+				(
+						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
+								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
+				)
+		){
+			CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+			orderRequest.setEmployeeId(customUserDetail.getUser().getId());
 			if (orderServices.updateOrder(id, orderRequest)){
 				return new ResponseEntity<>(orderRequest, HttpStatus.OK);
 			}
 			else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
 		}
-		else{
-			if (authentication == null){
-				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
-			}
-			else
-				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
-		}
+		else
+			return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
 	}
 
 
@@ -126,17 +181,13 @@ public class OrderController {
 								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){
-			if (orderServices.deleteOrder(id)){
+			CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+			if (orderServices.deleteOrder(id, customUserDetail.getUser().getId())){
 				return new ResponseEntity<>("order is deleted", HttpStatus.OK);
 			}
 			else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
 		}
-		else{
-			if (authentication == null){
-				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
-			}
-			else
-				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
-		}
+		else
+			return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
 	}
 }

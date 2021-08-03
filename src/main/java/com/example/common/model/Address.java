@@ -23,10 +23,6 @@ public class Address {
 
     @Override
     public String toString() {
-        return "Address{" +
-                "Address='" + andress + '\'' +
-                ", Distric='" + distric + '\'' +
-                ", City='" + city + '\'' +
-                '}';
+        return andress + ", " + distric + ", " + city;
     }
 }

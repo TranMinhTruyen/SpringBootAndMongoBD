@@ -48,8 +48,10 @@ public class ProductController {
 		){
 			if (productServices.isExists(productRequest.getName()))
 				return new ResponseEntity<>("Product is exists", HttpStatus.BAD_REQUEST);
-			if (productServices.createProduct(productRequest))
-				return new ResponseEntity<>(productRequest, HttpStatus.OK);
+			ProductResponse productResponse = productServices.createProduct(productRequest);
+			if (productResponse != null){
+				return new ResponseEntity<>(productResponse, HttpStatus.OK);
+			}
 			else
 				return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
 		}
@@ -96,8 +98,9 @@ public class ProductController {
 								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
 				)
 		){
-			if (productServices.updateProduct(id, productRequest)){
-				return new ResponseEntity<>(productRequest, HttpStatus.OK);
+			ProductResponse productResponse = productServices.updateProduct(id, productRequest);
+			if (productResponse != null){
+				return new ResponseEntity<>(productResponse, HttpStatus.OK);
 			}
 			else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
 		}

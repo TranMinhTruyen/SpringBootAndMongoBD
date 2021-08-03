@@ -11,9 +11,10 @@ import lombok.EqualsAndHashCode;
 public class ProductResponse {
 	private int id;
 	private String name;
-	private Float price;
+	private float price;
 	private String type;
 	private float discount;
+	private float unitInStock;
 	private String brand;
 	private String category;
 	private byte[] image;

@@ -16,4 +16,5 @@ public interface CartServices {
 	boolean deleteCart(int id);
 	boolean addProductToCart(int customerId, int productId);
 	boolean removeProductFromCart(int customerId, int productId);
+	boolean isCartExists(int customerId);
 }

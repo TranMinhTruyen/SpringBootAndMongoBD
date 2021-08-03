@@ -1,5 +1,8 @@
 package com.example.controller;
 
+import com.example.common.jwt.CustomUserDetail;
+import com.example.common.jwt.JWTAuthenticationFilter;
+import com.example.common.model.User;
 import com.example.common.request.CartRequest;
 import com.example.common.response.CartResponse;
 import com.example.services.CartServices;
@@ -15,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -33,7 +37,7 @@ public class CartController {
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
 			security = {@SecurityRequirement(name = "Authorization")})
 	@PostMapping(value = "createCartAndAddProductToCart")
-	public ResponseEntity<?> createCartAndAddProductToCart(@RequestParam int customerId, @RequestParam int productId) {
+	public ResponseEntity<?> createCartAndAddProductToCart(@RequestParam int productId) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null &&
 				(
@@ -41,28 +45,41 @@ public class CartController {
 						authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){
-			if (cartServices.addProductToCart(customerId, productId))
-				return new ResponseEntity<>("Cart is added", HttpStatus.OK);
-			else return new ResponseEntity<>("Error", HttpStatus.OK);
+			CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+			if (!cartServices.isCartExists(customUserDetail.getUser().getId())) {
+				cartServices.addProductToCart(customUserDetail.getUser().getId(), productId);
+				return new ResponseEntity<>("Cart is create", HttpStatus.OK);
+			}
+			else {
+				cartServices.addProductToCart(customUserDetail.getUser().getId(), productId);
+				return new ResponseEntity<>("Product is added", HttpStatus.OK);
+			}
 		}
 		else return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
 	}
 
-	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
+	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
+			security = {@SecurityRequirement(name = "Authorization")})
 	@GetMapping(value="getCartById")
-	public ResponseEntity<?>getCartById(@RequestParam int id){
-		CartResponse cartResponse = cartServices.getCartById(id);
-		if (cartResponse != null){
-			return new ResponseEntity<>(cartResponse, HttpStatus.OK);
+	public ResponseEntity<?>getCartById(){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
+								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
+		){
+			CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+			CartResponse cartResponse = cartServices.getCartById(customUserDetail.getUser().getId());
+			if (cartResponse != null){
+				return new ResponseEntity<>(cartResponse, HttpStatus.OK);
+			}
+			else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
 		}
-		else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+		else return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
 	}
 
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
 			security = {@SecurityRequirement(name = "Authorization")})
 	@PutMapping(value = "updateProductAmount")
-	public ResponseEntity<?>updateProductAmount(@RequestParam int customerId,
-												@RequestParam int productId,
+	public ResponseEntity<?>updateProductAmount(@RequestParam int productId,
 												@RequestParam long amount) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null &&
@@ -71,7 +88,8 @@ public class CartController {
 								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){
-			if (cartServices.updateProductAmount(customerId, productId, amount))
+			CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+			if (cartServices.updateProductAmount(customUserDetail.getUser().getId(), productId, amount))
 				return new ResponseEntity<>("Product amount is updated", HttpStatus.OK);
 			else return new ResponseEntity<>("Error", HttpStatus.NOT_FOUND);
 		}
@@ -83,7 +101,7 @@ public class CartController {
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
 			security = {@SecurityRequirement(name = "Authorization")})
 	@DeleteMapping(value = "removeProductFromCart")
-	public ResponseEntity<?>updateProductList(@RequestParam int customerId, @RequestParam int productId) {
+	public ResponseEntity<?>updateProductList(@RequestParam int productId) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null &&
 				(
@@ -91,7 +109,8 @@ public class CartController {
 								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){
-		 	if(cartServices.removeProductFromCart(customerId, productId))
+			CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+		 	if(cartServices.removeProductFromCart(customUserDetail.getUser().getId(), productId))
 				return new ResponseEntity<>("Product is removed", HttpStatus.OK);
 		 	else return new ResponseEntity<>("Error", HttpStatus.NOT_FOUND);
 		}
@@ -103,7 +122,7 @@ public class CartController {
 	@Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
 			security = {@SecurityRequirement(name = "Authorization")})
 	@DeleteMapping(value = "deleteCart")
-	public ResponseEntity<?>deleteCart(@RequestParam int id){
+	public ResponseEntity<?>deleteCart(){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null &&
 				(
@@ -111,15 +130,11 @@ public class CartController {
 								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){
-			cartServices.deleteCart(id);
+			CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+			cartServices.deleteCart(customUserDetail.getUser().getId());
 			return new ResponseEntity<>("Cart is deleted", HttpStatus.OK);
 		}
-		else{
-			if (authentication == null){
-				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
-			}
-			else
-				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
-		}
+		else
+			return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
 	}
 }

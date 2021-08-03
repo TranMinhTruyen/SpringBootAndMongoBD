@@ -22,13 +22,16 @@ public class Product implements Serializable {
 	private String name;
 
 	@Column
-	private Float price;
+	private float price;
 
 	@Column
 	private String type;
 
 	@Column
 	private float discount;
+
+	@Column
+	private float unitInStock;
 
 	@ManyToOne()
 	@JoinColumn(name = "ID_BRAND", nullable = true)

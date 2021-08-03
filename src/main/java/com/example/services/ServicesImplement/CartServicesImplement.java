@@ -43,6 +43,8 @@ public class CartServicesImplement implements CartServices {
 			Product product = productResult.get();
 			listProducts.add(new ListProduct(product.getId(), product.getName(), product.getPrice(),
 					product.getDiscount(), 1));
+			product.setUnitInStock(product.getUnitInStock() - 1);
+			productRepository.save(product);
 			newCart.setId(userResult.get().getId());
 			newCart.setProductList(listProducts);
 			newCart.setTotalPrice(product.getPrice()-(product.getPrice()*(product.getDiscount()/100)));
@@ -69,12 +71,21 @@ public class CartServicesImplement implements CartServices {
 	public boolean updateProductAmount(int customerId, int productId, long amount) {
 		Optional<Cart> cartResult = cartRepository.findById(customerId);
 		Optional<User> userResult = userRepository.findById(customerId);
+		Optional<Product> productResult = productRepository.findById(productId);
 		if (cartResult.isPresent() && userResult.isPresent()){
 			float totalPrice = 0;
 			Cart update = cartResult.get();
 			List<ListProduct> list = update.getProductList();
 			for (ListProduct items: list){
 				if (items.getId() == productId){
+					if (items.getProductAmount() > amount){
+						productResult.get().setUnitInStock(productResult.get().getUnitInStock() + (items.getProductAmount() - amount));
+						productRepository.save(productResult.get());
+					}
+					else {
+						productResult.get().setUnitInStock(productResult.get().getUnitInStock() - (amount - items.getProductAmount()));
+						productRepository.save(productResult.get());
+					}
 					items.setProductAmount(amount);
 					break;
 				}
@@ -96,7 +107,6 @@ public class CartServicesImplement implements CartServices {
 		Optional<Cart> cartResult = cartRepository.findById(customerId);
 		Optional<Product> productResult = productRepository.findById(productId);
 		Optional<User> userResult = userRepository.findById(customerId);
-		boolean isProductExists = false;
 		float totalPrice = 0;
 		if (cartResult.isPresent() && productResult.isPresent() && userResult.isPresent()){
 			Cart cart = cartResult.get();
@@ -110,6 +120,8 @@ public class CartServicesImplement implements CartServices {
 					totalPrice += (items.getProductPrice()-(items.getProductPrice() * (items.getDiscount() / 100)))
 							* items.getProductAmount();
 				}
+				product.setUnitInStock(product.getUnitInStock() - 1);
+				productRepository.save(product);
 				cart.setId(userResult.get().getId());
 				cart.setProductList(productInCart);
 				cart.setTotalPrice(totalPrice);
@@ -141,6 +153,8 @@ public class CartServicesImplement implements CartServices {
 			List<ListProduct> list = update.getProductList();
 			for (ListProduct items: list){
 				if (items.getId() == productResult.get().getId()){
+					productResult.get().setUnitInStock(productResult.get().getUnitInStock() + items.getProductAmount());
+					productRepository.save(productResult.get());
 					list.remove(items);
 					break;
 				}
@@ -160,11 +174,30 @@ public class CartServicesImplement implements CartServices {
 	}
 
 	@Override
+	public boolean isCartExists(int customerId) {
+		return cartRepository.findById(customerId).isPresent();
+	}
+
+	@Override
 	public boolean deleteCart(int id){
-		if (cartRepository.existsById(id)){
+		Optional<Cart> cartResult = cartRepository.findById(id);
+		if (cartResult.isPresent()){
+			if (!cartResult.get().getProductList().isEmpty()){
+				cartResult.get().getProductList().stream().forEach(items ->{
+					returnProductFromCart(items.getId(), items.getProductAmount());
+				});
+				cartRepository.deleteById(id);
+				return true;
+			}
 			cartRepository.deleteById(id);
 			return true;
 		}
 		else return false;
+	}
+
+	private void returnProductFromCart(int productId, float amount){
+		Optional<Product> update = productRepository.findById(productId);
+		update.get().setUnitInStock(update.get().getUnitInStock() + amount);
+		productRepository.save(update.get());
 	}
 }

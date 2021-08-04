@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Tran Minh Truyen
@@ -106,6 +107,7 @@ public class ProductServicesImplement implements ProductServices {
 			update.setImage(productRequest.getImage());
 			update.setDiscount(productRequest.getDiscount());
 			Product result = productRepository.save(update);
+			updateProductFromCart(id, update);
 			if (result != null)
 				return getProductAfterUpdateOrCreate(result);
 			else return null;
@@ -124,13 +126,15 @@ public class ProductServicesImplement implements ProductServices {
 		else return false;
 	}
 
-	public void deleteProductFromCart(int id){
+	public void updateProductFromCart(int productId, Product product){
 		List<Cart> cartResult = cartRepository.findAll();
 		float totalPrice = 0;
 		for (Cart cart: cartResult){
 			for (ListProduct listProduct: cart.getProductList()){
-				if (listProduct.getId() == id){
-					cart.getProductList().remove(listProduct);
+				if (listProduct.getId() == productId){
+					listProduct.setProductName(product.getName());
+					listProduct.setProductPrice(product.getPrice());
+					listProduct.setDiscount(product.getDiscount());
 					for (ListProduct items: cart.getProductList()){
 						totalPrice += (items.getProductPrice()-(items.getProductPrice() * (items.getDiscount() / 100)))
 								* items.getProductAmount();
@@ -141,11 +145,32 @@ public class ProductServicesImplement implements ProductServices {
 			}
 		}
 		cartRepository.saveAll(cartResult);
+	}
+
+	public void deleteProductFromCart(int productId){
+		List<Cart> cartResult = cartRepository.findAll();
+		float totalPrice = 0;
+
 		for (Cart cart: cartResult){
+			for (ListProduct listProduct: cart.getProductList()){
+				if (listProduct.getId() == productId){
+					cart.getProductList().remove(listProduct);
+					for (ListProduct items: cart.getProductList()){
+						totalPrice += (items.getProductPrice()-(items.getProductPrice() * (items.getDiscount() / 100)))
+								* items.getProductAmount();
+					}
+					cart.setTotalPrice(totalPrice);
+					break;
+				}
+			}
+		}
+
+		cartRepository.saveAll(cartResult);
+		cartResult.stream().forEach(cart -> {
 			if(cart.getProductList().isEmpty()){
 				cartRepository.delete(cart);
 			}
-		}
+		});
 	}
 
 	@Override

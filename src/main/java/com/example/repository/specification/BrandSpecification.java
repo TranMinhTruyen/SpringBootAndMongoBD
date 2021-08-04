@@ -18,7 +18,7 @@ public final class BrandSpecification implements Specification<Brand>{
 	public Predicate toPredicate(Root<Brand> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
 		List<Predicate> predicates = new ArrayList<>();
 		if (keyword != null){
-			predicates.add(cb.like(cb.lower(root.get("name").as(String.class)), keyword));
+			predicates.add(cb.like(cb.lower(root.get("name").as(String.class)), keyword.concat("%")));
 			predicates.add(cb.like(cb.lower(root.get("id").as(String.class)), keyword));
 		}
 		Predicate search = null;

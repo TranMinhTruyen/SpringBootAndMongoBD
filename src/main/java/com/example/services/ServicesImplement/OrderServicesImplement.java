@@ -15,6 +15,7 @@ import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -80,6 +81,7 @@ public class OrderServicesImplement implements OrderServices {
 	}
 
 	@Override
+	@Transactional
 	public boolean updateOrder(int id, OrderRequest orderRequest) {
 		Optional<Order> order = orderRepository.findById(id);
 		if(order.isPresent()){

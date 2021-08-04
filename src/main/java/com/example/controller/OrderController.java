@@ -64,13 +64,8 @@ public class OrderController {
 					return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
 			}
 		}
-		else{
-			if (authentication == null){
-				return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
-			}
-			else
-				return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
-		}
+		else
+			return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
 	}
 
 

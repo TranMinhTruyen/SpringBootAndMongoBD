@@ -18,11 +18,6 @@ public final class ProductSpecification implements Specification<Product> {
 		List<Predicate> predicates = new ArrayList<>();
 		if (keyword != null){
 			predicates.add(cb.like(cb.lower(root.get("name").as(String.class)), keyword.concat("%")));
-			predicates.add(cb.like(cb.lower(root.get("id").as(String.class)), keyword));
-			predicates.add(cb.like(cb.lower(root.get("price").as(String.class)), keyword));
-			predicates.add(cb.like(cb.lower(root.get("type").as(String.class)), keyword));
-			predicates.add(cb.like(cb.lower(root.get("category").get("name").as(String.class)), keyword));
-			predicates.add(cb.like(cb.lower(root.get("brand").get("name").as(String.class)), keyword));
 		}
 		Predicate search = null;
 		if (!predicates.isEmpty()){

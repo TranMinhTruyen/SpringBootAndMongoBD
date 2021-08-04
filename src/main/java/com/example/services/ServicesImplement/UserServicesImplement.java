@@ -63,7 +63,7 @@ public class UserServicesImplement implements UserDetailsService, UserServices {
     @Override
     public CommonResponse getUserByKeyWord(int page, int size, String keyword){
         CommonResponse commonResponse = new CommonResponse();
-        List result = userRepository.findUserByFirstNameContainingOrLastNameContaining(keyword,keyword);
+        List result = userRepository.findUserByFirstNameContainingOrLastNameContaining(keyword, keyword);
         if (result != null){
             return new CommonResponse().getCommonResponse(page, size, result);
         }

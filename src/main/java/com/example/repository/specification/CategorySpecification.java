@@ -19,7 +19,7 @@ public class CategorySpecification implements Specification<Category> {
 	public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
 		List<Predicate> predicates = new ArrayList<>();
 		if (keyword != null){
-			predicates.add(cb.like(cb.lower(root.get("name").as(String.class)), keyword));
+			predicates.add(cb.like(cb.lower(root.get("name").as(String.class)), keyword.concat("%")));
 			predicates.add(cb.like(cb.lower(root.get("id").as(String.class)), keyword));
 		}
 		Predicate search = null;

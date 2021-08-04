@@ -43,7 +43,7 @@ public class CategoryServicesImp implements CategoryServices {
 
 	@Override
 	public CommonResponse getCategoryByKeyword(int page, int size, String keyword) {
-		List<Category> result = categoryRepository.findAll();
+		List<Category> result = categoryRepository.findAll(new CategorySpecification(keyword));
 		if (result != null){
 			return new CommonResponse().getCommonResponse(page, size, result);
 		}

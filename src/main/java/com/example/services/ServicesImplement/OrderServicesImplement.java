@@ -49,7 +49,7 @@ public class OrderServicesImplement implements OrderServices {
 			newOrder.setCustomerId(userResult.get().getId());
 			newOrder.setCreateDate(new Date());
 			newOrder.setListProducts(cartResult.get().getProductList());
-			newOrder.setStatus("Progessive");
+			newOrder.setStatus("Processing");
 			newOrder.setTotalPrice(cartResult.get().getTotalPrice());
 			newOrder.setAndress(userResult.get().getAddress().toString());
 			Order order = orderRepository.save(newOrder);

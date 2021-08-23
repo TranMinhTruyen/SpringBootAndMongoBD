@@ -1,0 +1,28 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: product-services
+          uri: lb://product-services
+          predicates:
+          - Path=/product/**
+          filters:
+          - RewritePath=/product/(?<path>.*), /$\{path}
+        - id: brand-services
+          uri: lb://brand-services
+          predicates:
+          - Path=/brand/**
+          filters:
+          - RewritePath=/brand/(?<path>.*), /$\{path}
+        - id: user-services
+          uri: lb://user-services
+          predicates:
+          - Path=/user/**
+          filters:
+          - RewritePath=/user/(?<path>.*), /$\{path}
+        - id: openapi
+          uri: http://localhost:${server.port}
+          predicates:
+          - Path=/v3/api-docs/**
+          filters:
+          - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs

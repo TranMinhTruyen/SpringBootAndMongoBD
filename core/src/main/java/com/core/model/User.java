@@ -38,6 +38,9 @@ public class User {
     @Field(value = "CitizenID")
     private String citizenId;
 
+    @Field(value = "Mail")
+    private String email;
+
     @Field(value = "Role")
     private String role;
 

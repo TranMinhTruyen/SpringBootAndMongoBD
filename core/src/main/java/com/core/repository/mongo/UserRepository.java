@@ -11,4 +11,5 @@ public interface UserRepository extends MongoRepository<User, Integer>{
     List findUserByFirstNameContainingOrLastNameContaining(String firstName, String lastName);
     User findUsersByAccountEqualsAndPasswordContains(String account, String password);
     User findUserByAccount(String account);
+    User findByEmailEquals(String email);
 }

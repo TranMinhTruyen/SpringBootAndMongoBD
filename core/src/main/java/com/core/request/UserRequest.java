@@ -18,6 +18,7 @@ public class UserRequest {
     private Date birthDay;
     private Address address;
     private String citizenID;
+    private String email;
     private byte[] image;
     private String role;
     private boolean isActive;

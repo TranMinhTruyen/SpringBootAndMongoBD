@@ -1,6 +1,7 @@
 package com.core.request;
 
 import com.core.model.Address;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.Date;
@@ -11,8 +12,11 @@ import java.util.List;
  */
 @Data
 public class UserRequest {
+
     private String account;
+
     private String password;
+
     private String firstName;
     private String lastName;
     private Date birthDay;

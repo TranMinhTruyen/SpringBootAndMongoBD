@@ -2,7 +2,9 @@ package com.example.userservices.services;
 
 import com.core.entity.Product;
 import com.core.model.*;
+import com.core.repository.mongo.CartRepository;
 import com.core.repository.mongo.ConfirmKeyRepository;
+import com.core.repository.mongo.OrderRepository;
 import com.core.repository.mongo.UserRepository;
 import com.core.request.LoginRequest;
 import com.core.request.UserRequest;
@@ -12,6 +14,7 @@ import com.core.response.UserResponse;
 import com.google.common.hash.Hashing;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMailMessage;
@@ -38,6 +41,12 @@ public class UserServicesImp implements UserServices, UserDetailsService {
     @Autowired
     private ConfirmKeyRepository confirmKeyRepository;
 
+    @Autowired
+    private CartRepository cartRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
     @Override
     public UserResponse createUser(UserRequest userRequest) {
         if (userRequest != null && !accountIsExists(userRequest.getAccount(), userRequest.getEmail()))  {
@@ -45,7 +54,7 @@ public class UserServicesImp implements UserServices, UserDetailsService {
             User newUser = new User();
             Address newAddress = userRequest.getAddress();
             newUser.setAccount(userRequest.getAccount());
-            newUser.setPassword(Hashing.sha512().hashString(userRequest.getPassword(), StandardCharsets.UTF_8).toString());
+            newUser.setPassword(userRequest.getPassword());
             newUser.setFirstName(userRequest.getFirstName());
             newUser.setLastName(userRequest.getLastName());
             newUser.setBirthDay(userRequest.getBirthDay());
@@ -83,7 +92,7 @@ public class UserServicesImp implements UserServices, UserDetailsService {
 
     @Override
     public User Login(LoginRequest loginRequest) {
-        User result = userRepository.findUsersByAccountEqualsAndPasswordContains(loginRequest.getAccount(), Hashing.sha512().hashString(loginRequest.getPassword(), StandardCharsets.UTF_8).toString());
+        User result = userRepository.findUsersByAccountEqualsAndPasswordContains(Hashing.sha512().hashString(loginRequest.getAccount(), StandardCharsets.UTF_8).toString(), Hashing.sha512().hashString(loginRequest.getPassword(), StandardCharsets.UTF_8).toString());
         if (result != null){
             return result;
         }
@@ -109,24 +118,49 @@ public class UserServicesImp implements UserServices, UserDetailsService {
     }
 
     @Override
-    public void sendEmailConfirmKey(String email, String confirmKey) {
-        ConfirmKey newConfirmKey = new ConfirmKey();
-        newConfirmKey.setEmail(email);
-        newConfirmKey.setKey(confirmKey);
-        Date now = new Date();
-        Date expireTime = new Date(now.getTime() + 300000);
-        newConfirmKey.setExpire(expireTime);
-        ConfirmKey isKeyExists = confirmKeyRepository.findByEmailEquals(email);
-        if (isKeyExists != null){
-            confirmKeyRepository.deleteByEmail(email);
+    public UserResponse getProfileUser(int id) {
+        UserResponse userResponse = new UserResponse();
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()){
+            userResponse.setFirstName(user.get().getFirstName());
+            userResponse.setLastName(user.get().getLastName());
+            userResponse.setBirthDay(user.get().getBirthDay());
+            userResponse.setAddress(user.get().getAddress());
+            userResponse.setCitizenID(user.get().getCitizenId());
+            userResponse.setEmail(user.get().getEmail());
+            userResponse.setImage(user.get().getImage());
+            userResponse.setActive(user.get().isActive());
+            return userResponse;
         }
-        confirmKeyRepository.save(newConfirmKey);
+        else
+            return null;
+    }
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(email);
-        mailMessage.setSubject("GG-App Confirm Key");
-        mailMessage.setText("This is your confirm key: " + confirmKey + "\n" + "Key will expired in 5 minutes");
-        emailSender.send(mailMessage);
+    @Override
+    public String sendEmailConfirmKey(String email, String confirmKey) {
+        try {
+            ConfirmKey newConfirmKey = new ConfirmKey();
+            newConfirmKey.setEmail(email);
+            newConfirmKey.setKey(confirmKey);
+            Date now = new Date();
+            Date expireTime = new Date(now.getTime() + 300000);
+            newConfirmKey.setExpire(expireTime);
+            ConfirmKey isKeyExists = confirmKeyRepository.findByEmailEquals(email);
+            if (isKeyExists != null){
+                confirmKeyRepository.deleteByEmail(email);
+            }
+            confirmKeyRepository.save(newConfirmKey);
+
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setTo(email);
+            mailMessage.setSubject("GG-App Confirm Key");
+            mailMessage.setText("This is your confirm key: " + confirmKey + "\n" + "Key will expired in 5 minutes");
+            emailSender.send(mailMessage);
+        } catch (MailException e) {
+            confirmKeyRepository.deleteByEmail(email);
+            return e.getMessage();
+        }
+        return "Mail has been sent, please check your email";
     }
 
     @Override
@@ -169,7 +203,9 @@ public class UserServicesImp implements UserServices, UserDetailsService {
     @Override
     public boolean deleteUser(int id) {
         Optional<User> user = userRepository.findById(id);
+        Optional<Cart> cart = cartRepository.findById(id);
         if (user.isPresent()){
+            cartRepository.deleteById(id);
             userRepository.deleteById(id);
             return true;
         }

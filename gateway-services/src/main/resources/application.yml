@@ -5,21 +5,27 @@ spring:
         - id: product-services
           uri: lb://product-services
           predicates:
-          - Path=/product/**
+            - Path=/product/**
           filters:
-          - RewritePath=/product/(?<path>.*), /$\{path}
+            - RewritePath=/product/(?<path>.*), /$\{path}
         - id: brand-services
           uri: lb://brand-services
           predicates:
-          - Path=/brand/**
+            - Path=/brand/**
           filters:
-          - RewritePath=/brand/(?<path>.*), /$\{path}
+            - RewritePath=/brand/(?<path>.*), /$\{path}
         - id: user-services
           uri: lb://user-services
           predicates:
-          - Path=/user/**
+            - Path=/user/**
           filters:
-          - RewritePath=/user/(?<path>.*), /$\{path}
+            - RewritePath=/user/(?<path>.*), /$\{path}
+        - id: cart-services
+          uri: lb://cart-services
+          predicates:
+            - Path=/cart/**
+          filters:
+            - RewritePath=/cart/(?<path>.*), /$\{path}
         - id: openapi
           uri: http://localhost:${server.port}
           predicates:

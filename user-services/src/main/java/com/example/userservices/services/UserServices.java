@@ -13,7 +13,8 @@ public interface UserServices {
     CommonResponse getUserByKeyWord(int page, int size, String keyword);
     User Login(LoginRequest loginRequest);
     User resetPassword(String email);
-    void sendEmailConfirmKey(String email, String confirmKey);
+    UserResponse getProfileUser(int id);
+    String sendEmailConfirmKey(String email, String confirmKey);
     boolean checkConfirmKey(String email, String confirmKey);
     UserResponse updateUser(int id, UserRequest request);
     boolean deleteUser(int id);

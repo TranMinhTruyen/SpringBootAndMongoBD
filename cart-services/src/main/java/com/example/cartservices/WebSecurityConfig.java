@@ -1,9 +1,6 @@
-package com.example.userservices;
+package com.example.cartservices;
 
-import com.example.userservices.jwt.JWTAuthenticationFilter;
-import com.example.userservices.services.UserServices;
-import com.example.userservices.services.UserServicesImp;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.cartservices.jwt.JWTAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,13 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private UserServicesImp userServices;
-
     private static final String[] AUTH_WHITELIST = {
-            "/createUser",
-            "/login",
-            "/resetPassword",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html"
@@ -45,10 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth)
-            throws Exception {
-        auth.userDetailsService(userServices).passwordEncoder(passwordEncoder());;
-    }
+    protected void configure(AuthenticationManagerBuilder auth){}
 
     @Bean
     public PasswordEncoder passwordEncoder() {

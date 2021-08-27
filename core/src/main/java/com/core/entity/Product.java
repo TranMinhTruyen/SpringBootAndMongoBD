@@ -9,9 +9,8 @@ import java.io.Serializable;
 /**
  * @author Tran Minh Truyen
  */
-
-@Entity
 @Data
+@Entity
 public class Product implements Serializable {
 
 	@Id

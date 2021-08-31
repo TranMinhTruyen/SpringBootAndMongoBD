@@ -14,4 +14,6 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
 	Product findProductById(int id);
 	List findProductByNameContains(String name);
+	List findAllByBrandId(int brand_id);
+	List findAllByCategoryId(int category_id);
 }

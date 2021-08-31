@@ -1,7 +1,6 @@
 package com.example.brandservices.controller;
 
 import com.core.request.BrandRequest;
-import com.core.request.ProductRequest;
 import com.core.response.BrandResponse;
 import com.core.response.CommonResponse;
 import com.example.brandservices.services.BrandServices;
@@ -15,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "BrandController")
@@ -28,53 +29,92 @@ public class BrandController {
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
             security = {@SecurityRequirement(name = "Authorization")})
     @PostMapping(value = "createBrand", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createBrand(@RequestBody BrandRequest brandRequest) {
-        if (brandServices.isExists(brandRequest.getName()))
-            return new ResponseEntity<>("Brand is exists", HttpStatus.BAD_REQUEST);
-        if (brandServices.createBrand(brandRequest))
-            return new ResponseEntity<>(brandRequest, HttpStatus.OK);
-        else
-            return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> createBrand(@RequestBody BrandRequest brandRequest){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")))
+        ){
+            if (brandServices.isExists(brandRequest.getName()))
+                return new ResponseEntity<>("Brand is exists", HttpStatus.BAD_REQUEST);
+            if (brandServices.createBrand(brandRequest))
+                return new ResponseEntity<>(brandRequest, HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+        }
+        else return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
     }
 
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
-    @GetMapping(value = "getBrandByKeyword")
+    @GetMapping(value="getBrandByKeyword")
     public ResponseEntity<?> getBrandByKeyword(@RequestParam int page,
                                                @RequestParam int size,
-                                               @RequestParam(required = false) String keyword) {
+                                               @RequestParam(required = false) String keyword){
         CommonResponse commonResponse = brandServices.getBrandbyKeyword(page, size, keyword);
-        if (commonResponse != null) {
+        if (commonResponse != null){
             return new ResponseEntity<>(commonResponse, HttpStatus.OK);
-        } else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+        }
+        else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
     }
 
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
-    @GetMapping(value = "getAllBrand")
-    public ResponseEntity<?> getAllBrand(@RequestParam int page,
-                                         @RequestParam int size) {
+    @GetMapping(value="getAllBrand")
+    public ResponseEntity<?>getAllBrand(@RequestParam int page,
+                                        @RequestParam int size){
         CommonResponse commonResponse = brandServices.getAllBrand(page, size);
-        if (commonResponse != null) {
+        if (commonResponse != null){
             return new ResponseEntity<>(commonResponse, HttpStatus.OK);
-        } else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+        }
+        else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
     }
 
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
             security = {@SecurityRequirement(name = "Authorization")})
     @PutMapping(value = "updateBrand", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateBrand(@RequestParam int id, @RequestBody BrandRequest brandRequest) {
-        BrandResponse brandResponse = brandServices.updateBrand(id, brandRequest);
-        if (brandResponse != null) {
-            return new ResponseEntity<>(brandResponse, HttpStatus.OK);
-        } else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?>updateBrand(@RequestParam int id, @RequestBody BrandRequest brandRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null &&
+                (
+                        authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
+                                authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
+                )
+        ){
+            BrandResponse brandResponse = brandServices.updateBrand(id, brandRequest);
+            if (brandResponse != null){
+                return new ResponseEntity<>(brandResponse, HttpStatus.OK);
+            }
+            else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+        }
+        else{
+            if (authentication == null){
+                return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
+            }
+            else
+                return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
             security = {@SecurityRequirement(name = "Authorization")})
     @DeleteMapping(value = "deleteBrand")
-    public ResponseEntity<?> deleteBrand(@RequestParam int id) {
-        if (brandServices.deleteBrand(id)) {
-            return new ResponseEntity<>("category is deleted", HttpStatus.OK);
-        } else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?>deleteBrand(@RequestParam int id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null &&
+                (
+                        authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN")) ||
+                                authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("EMP"))
+                )
+        ){
+            if (brandServices.deleteBrand(id)){
+                return new ResponseEntity<>("category is deleted", HttpStatus.OK);
+            }
+            else return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+        }
+        else{
+            if (authentication == null){
+                return new ResponseEntity<>("Please login", HttpStatus.UNAUTHORIZED);
+            }
+            else
+                return new ResponseEntity<>("You don't have permission", HttpStatus.UNAUTHORIZED);
+        }
     }
 }
 

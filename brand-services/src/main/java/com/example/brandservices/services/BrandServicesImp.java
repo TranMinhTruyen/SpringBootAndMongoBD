@@ -1,7 +1,9 @@
 package com.example.brandservices.services;
 
 import com.core.entity.Brand;
+import com.core.entity.Product;
 import com.core.repository.mysql.BrandRepository;
+import com.core.repository.mysql.ProductRepository;
 import com.core.repository.specification.BrandSpecification;
 import com.core.request.BrandRequest;
 import com.core.response.BrandResponse;
@@ -17,6 +19,9 @@ public class BrandServicesImp implements BrandServices{
 
     @Autowired
     private BrandRepository brandRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public boolean createBrand(BrandRequest brandRequest) {
@@ -66,6 +71,13 @@ public class BrandServicesImp implements BrandServices{
     public boolean deleteBrand(int id) {
         Optional<Brand> brand = brandRepository.findById(id);
         if (brand.isPresent()){
+            List<Product> products = productRepository.findAllByBrandId(id);
+            if (products != null && !products.isEmpty()){
+                products.stream().forEach(items -> {
+                    items.setCategory(null);
+                    productRepository.save(items);
+                });
+            }
             brandRepository.deleteById(id);
             return true;
         }

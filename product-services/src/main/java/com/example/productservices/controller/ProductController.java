@@ -81,7 +81,7 @@ public class ProductController {
 
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
             security = {@SecurityRequirement(name = "Authorization")})
-    @DeleteMapping(value = "deleteProduct")
+    @DeleteMapping(value = "deleteProduct/")
     public ResponseEntity<?>deleteProduct(@RequestParam int id){
         if (productServices.deleteProduct(id)){
             return new ResponseEntity<>("product is deleted", HttpStatus.OK);

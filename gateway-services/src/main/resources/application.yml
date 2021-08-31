@@ -26,6 +26,12 @@ spring:
             - Path=/cart/**
           filters:
             - RewritePath=/cart/(?<path>.*), /$\{path}
+        - id: category-services
+          uri: lb://category-services
+          predicates:
+            - Path=/category/**
+          filters:
+            - RewritePath=/category/(?<path>.*), /$\{path}
         - id: openapi
           uri: http://localhost:${server.port}
           predicates:

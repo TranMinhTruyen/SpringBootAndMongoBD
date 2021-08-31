@@ -160,7 +160,6 @@ public class ProductServicesImp implements ProductServices{
     public void deleteProductFromCart(int productId){
         List<Cart> cartResult = cartRepository.findAll();
         float totalPrice = 0;
-
         for (Cart cart: cartResult){
             for (ListProduct listProduct: cart.getProductList()){
                 if (listProduct.getId() == productId){

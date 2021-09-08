@@ -57,7 +57,7 @@ public class OrderController {
 			else {
 				OrderResponse orderResponse = orderServices.createOrder(customUserDetail.getUser().getId());
 				if (orderResponse != null) {
-					cartServices.deleteCart(customUserDetail.getUser().getId());
+					cartServices.deleteCartAfterCreateOrder(customUserDetail.getUser().getId());
 					return new ResponseEntity<>(orderResponse, HttpStatus.OK);
 				}
 				else

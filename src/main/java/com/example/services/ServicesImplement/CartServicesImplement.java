@@ -195,6 +195,16 @@ public class CartServicesImplement implements CartServices {
 		else return false;
 	}
 
+	@Override
+	public boolean deleteCartAfterCreateOrder(int id) {
+		Optional<Cart> cartResult = cartRepository.findById(id);
+		if (cartResult.isPresent()){
+			cartRepository.deleteById(id);
+			return true;
+		}
+		return false;
+	}
+
 	private void returnProductFromCart(int productId, float amount){
 		Optional<Product> update = productRepository.findById(productId);
 		update.get().setUnitInStock(update.get().getUnitInStock() + amount);

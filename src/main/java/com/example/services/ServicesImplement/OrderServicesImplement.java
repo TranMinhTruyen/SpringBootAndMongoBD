@@ -38,7 +38,7 @@ public class OrderServicesImplement implements OrderServices {
 
 	@Override
 	public OrderResponse createOrder(int customerId) {
-		List<User> last  = new AutoIncrement(orderRepository).getLastOfCollection();
+		List<Order> last  = new AutoIncrement(orderRepository).getLastOfCollection();
 		Optional<Cart> cartResult = cartRepository.findById(customerId);
 		Optional<User> userResult = userRepository.findById(customerId);
 		if (userResult.isPresent() && cartResult.isPresent()) {

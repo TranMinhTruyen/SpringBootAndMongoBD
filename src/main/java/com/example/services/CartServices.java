@@ -14,6 +14,7 @@ public interface CartServices {
 	CartResponse getCartById(int id);
 	boolean updateProductAmount(int customerId, int productId, long amount);
 	boolean deleteCart(int id);
+	boolean deleteCartAfterCreateOrder(int id);
 	boolean addProductToCart(int customerId, int productId);
 	boolean removeProductFromCart(int customerId, int productId);
 	boolean isCartExists(int customerId);

@@ -22,7 +22,6 @@ import java.util.Optional;
  */
 @Service
 public class CartServicesImplement implements CartServices {
-
 	@Autowired
 	private CartRepository cartRepository;
 
@@ -39,7 +38,7 @@ public class CartServicesImplement implements CartServices {
 		Optional<Cart> cartResult = cartRepository.findById(customerId);
 		if (productResult.isPresent() && userResult.isPresent() && !cartResult.isPresent()){
 			Cart newCart = new Cart();
-			List <ListProduct> listProducts = new ArrayList<>();
+			List<ListProduct> listProducts = new ArrayList<>();
 			Product product = productResult.get();
 			listProducts.add(new ListProduct(product.getId(), product.getName(), product.getPrice(),
 					product.getDiscount(), 1));
@@ -195,6 +194,12 @@ public class CartServicesImplement implements CartServices {
 		else return false;
 	}
 
+	private void returnProductFromCart(int productId, float amount){
+		Optional<Product> update = productRepository.findById(productId);
+		update.get().setUnitInStock(update.get().getUnitInStock() + amount);
+		productRepository.save(update.get());
+	}
+
 	@Override
 	public boolean deleteCartAfterCreateOrder(int id) {
 		Optional<Cart> cartResult = cartRepository.findById(id);
@@ -203,11 +208,5 @@ public class CartServicesImplement implements CartServices {
 			return true;
 		}
 		return false;
-	}
-
-	private void returnProductFromCart(int productId, float amount){
-		Optional<Product> update = productRepository.findById(productId);
-		update.get().setUnitInStock(update.get().getUnitInStock() + amount);
-		productRepository.save(update.get());
 	}
 }

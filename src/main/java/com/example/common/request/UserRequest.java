@@ -15,6 +15,7 @@ public class UserRequest {
     private String password;
     private String firstName;
     private String lastName;
+    private String email;
     private Date birthDay;
     private Address address;
     private String citizenID;

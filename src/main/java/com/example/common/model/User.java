@@ -1,10 +1,12 @@
 package com.example.common.model;
 
+import com.google.common.hash.Hashing;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -41,6 +43,9 @@ public class User {
     @Field(value = "CitizenID")
     private String citizenId;
 
+    @Field(value = "Mail")
+    private String email;
+
     @Field(value = "Role")
     private String role;
 
@@ -49,6 +54,14 @@ public class User {
 
     @Field(value = "IsActive")
     private boolean isActive;
+
+    public void setPassword(String password) {
+        this.password = Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString();
+    }
+
+    public void setAccount(String account) {
+        this.account = Hashing.sha512().hashString(account, StandardCharsets.UTF_8).toString();
+    }
 
     @Override
     public String toString() {

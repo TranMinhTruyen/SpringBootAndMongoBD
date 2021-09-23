@@ -6,6 +6,7 @@ import com.example.common.request.BrandRequest;
 import com.example.common.response.BrandResponse;
 import com.example.common.response.CommonResponse;
 import com.example.repository.mysql.BrandRepository;
+import com.example.repository.mysql.ProductRepository;
 import com.example.repository.specification.BrandSpecification;
 import com.example.services.BrandServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class BrandServicesImp implements BrandServices {
 
 	@Autowired
 	private BrandRepository brandRepository;
+
+	@Autowired
+	private ProductRepository productRepository;
 
 	@Override
 	public boolean createBrand(BrandRequest brandRequest) {
@@ -69,6 +73,13 @@ public class BrandServicesImp implements BrandServices {
 	public boolean deleteBrand(int id) {
 		Optional<Brand> brand = brandRepository.findById(id);
 		if (brand.isPresent()){
+			List<Product> products = productRepository.findAllByBrandId(id);
+			if (products != null && !products.isEmpty()){
+				products.stream().forEach(items -> {
+					items.setCategory(null);
+					productRepository.save(items);
+				});
+			}
 			brandRepository.deleteById(id);
 			return true;
 		}

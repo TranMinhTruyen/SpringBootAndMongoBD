@@ -2,11 +2,13 @@ package com.example.services.ServicesImplement;
 
 import com.example.common.entity.Brand;
 import com.example.common.entity.Category;
+import com.example.common.entity.Product;
 import com.example.common.request.CategoryRequest;
 import com.example.common.response.BrandResponse;
 import com.example.common.response.CategoryResponse;
 import com.example.common.response.CommonResponse;
 import com.example.repository.mysql.CategoryRepository;
+import com.example.repository.mysql.ProductRepository;
 import com.example.repository.specification.CategorySpecification;
 import com.example.services.CategoryServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class CategoryServicesImp implements CategoryServices {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
+
+	@Autowired
+	private ProductRepository productRepository;
 
 	@Override
 	public boolean createCategory(CategoryRequest categoryRequest) {
@@ -68,6 +73,13 @@ public class CategoryServicesImp implements CategoryServices {
 	public boolean deleteCategory(int id) {
 		Optional<Category> category = categoryRepository.findById(id);
 		if (category.isPresent()){
+			List<Product> products = productRepository.findAllByCategoryId(id);
+			if (products != null && !products.isEmpty()){
+				products.stream().forEach(items -> {
+					items.setCategory(null);
+					productRepository.save(items);
+				});
+			}
 			categoryRepository.deleteById(id);
 			return true;
 		}

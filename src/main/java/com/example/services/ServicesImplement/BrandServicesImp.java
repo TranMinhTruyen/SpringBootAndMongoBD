@@ -30,7 +30,7 @@ public class BrandServicesImp implements BrandServices {
 		if (brandRequest != null && !isExists(brandRequest.getName())){
 			Brand newBrand = new Brand();
 			newBrand.setName(brandRequest.getName());
-			newBrand.setDescription(brandRequest.getDescription());
+			//newBrand.setDescription(brandRequest.getDescription());
 			brandRepository.save(newBrand);
 			return true;
 		}
@@ -63,7 +63,7 @@ public class BrandServicesImp implements BrandServices {
 			BrandResponse brandResponse = new BrandResponse();
 			brandResponse.setId(result.getId());
 			brandResponse.setName(result.getName());
-			brandResponse.setDescription(result.getDescription());
+			//brandResponse.setDescription(result.getDescription());
 			return brandResponse;
 		}
 		return null;
@@ -96,7 +96,7 @@ public class BrandServicesImp implements BrandServices {
 		if (brandRequest != null && brand.isPresent()){
 			Brand update = brand.get();
 			update.setName(brandRequest.getName());
-			update.setDescription(brandRequest.getDescription());
+			//update.setDescription(brandRequest.getDescription());
 			brandRepository.save(update);
 			return true;
 		}

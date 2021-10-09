@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,16 +14,17 @@ import java.util.List;
  */
 @Entity
 @Data
+@Table(name = "brand")
 public class Brand implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column
-	private String name;
+	@Column()
+	String name;
 
-	@Column
-	private String description;
+//	@Column
+//	private String description;
 
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="brand")

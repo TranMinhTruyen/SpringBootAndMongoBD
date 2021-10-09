@@ -15,6 +15,7 @@
   <description>Demo project for Spring Boot</description>
   <properties>
     <java.version>11</java.version>
+    <maven.build.timestamp.format>yyyy_MM_dd_HH_mm_ss</maven.build.timestamp.format>
   </properties>
   <dependencies>
     <dependency>
@@ -140,16 +141,76 @@
       <artifactId>spring-boot-starter-mail</artifactId>
       <version>2.5.4</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.liquibase/liquibase-core -->
+	<dependency>
+	    <groupId>org.liquibase</groupId>
+	    <artifactId>liquibase-core</artifactId>
+	    <version>4.3.5</version>
+	</dependency>
+    
   </dependencies>
 
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${project.parent.version}</version>
-      </plugin>
-    </plugins>
+    <pluginManagement>
+	    <plugins>
+	      <plugin>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-maven-plugin</artifactId>
+	        <version>${project.parent.version}</version>
+	      </plugin>
+	      <plugin>
+	        <groupId>org.liquibase</groupId>
+	        <artifactId>liquibase-maven-plugin</artifactId>
+	        <version>4.3.5</version>
+	        <configuration>
+	          <verbose>true</verbose>
+	          <driver>com.mysql.cj.jdbc.Driver</driver>
+	          <url>jdbc:mysql://localhost:3306/testdb</url>
+	          <referenceUrl>hibernate:spring:com.example.common.entity?dialect=org.hibernate.dialect.MySQL5InnoDBDialect</referenceUrl>
+	          <username>root</username>
+	          <password>1234</password>
+	          <diffChangeLogFile>src/main/resources/db/changelog/change/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
+	          <changeLogFile>src/main/resources/db/changelog/changelog-master.xml</changeLogFile>
+	        </configuration>
+	        <dependencies>
+		        <dependency>
+		            <groupId>org.liquibase.ext</groupId>
+		            <artifactId>liquibase-hibernate5</artifactId>
+		            <version>4.0.0</version>
+		        </dependency>
+		        <dependency>
+		            <groupId>org.springframework</groupId>
+		            <artifactId>spring-beans</artifactId>
+		            <version>4.1.7.RELEASE</version>
+		        </dependency>
+		        <dependency>
+		            <groupId>org.springframework.data</groupId>
+		            <artifactId>spring-data-jpa</artifactId>
+		            <version>1.7.3.RELEASE</version>
+		        </dependency>
+		        <dependency>
+		            <groupId>javax.validation</groupId>
+		            <artifactId>validation-api</artifactId>
+		            <version>2.0.1.Final</version>
+		        </dependency>
+		        <dependency>
+		            <groupId>org.springframework.boot</groupId>
+		            <artifactId>spring-boot-starter-data-jpa</artifactId>
+		            <version>2.5.0</version>
+		        </dependency>
+	        </dependencies>
+	        <executions>
+	          <execution>
+	            <id>generate-change-log</id>
+	            <goals>
+	              <goal>generateChangeLog</goal>
+	            </goals>
+	          </execution>
+	        </executions>
+	      </plugin>
+	   </plugins>
+    </pluginManagement>
+    
   </build>
 
 </project>

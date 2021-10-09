@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 @Entity
 @Data
+@Table(name = "product")
 public class Product implements Serializable {
 
 	@Id

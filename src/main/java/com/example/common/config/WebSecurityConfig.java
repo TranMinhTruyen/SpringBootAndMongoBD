@@ -24,6 +24,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	private static String[] WHITE_LIST = {
+			"/api/user/login",
+			"/api/user/createUser",
+			"/api/user/resetPassword"
+	};
+
+
 	@Autowired
 	private UserServicesImplement userServicesImplement;
 
@@ -55,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.csrf().disable()
 				.authorizeRequests()
 				.antMatchers(HttpMethod.GET).permitAll()
-				.antMatchers(HttpMethod.POST).permitAll()
+				.antMatchers(WHITE_LIST).permitAll()
 //				.antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 				.anyRequest().authenticated()
 				.and()

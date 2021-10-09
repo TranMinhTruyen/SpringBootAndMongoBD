@@ -55,14 +55,6 @@ public class User {
     @Field(value = "IsActive")
     private boolean isActive;
 
-    public void setPassword(String password) {
-        this.password = Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString();
-    }
-
-    public void setAccount(String account) {
-        this.account = Hashing.sha512().hashString(account, StandardCharsets.UTF_8).toString();
-    }
-
     @Override
     public String toString() {
         return "User{" +

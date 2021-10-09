@@ -48,7 +48,7 @@ public class UserServicesImplement implements UserDetailsService, UserServices {
             User newUser = new User();
             Address newAddress = userRequest.getAddress();
             newUser.setAccount(userRequest.getAccount());
-            newUser.setPassword(userRequest.getPassword());
+            newUser.setPassword(Hashing.sha512().hashString(userRequest.getPassword(), StandardCharsets.UTF_8).toString());
             newUser.setFirstName(userRequest.getFirstName());
             newUser.setLastName(userRequest.getLastName());
             newUser.setBirthDay(userRequest.getBirthDay());
@@ -86,7 +86,8 @@ public class UserServicesImplement implements UserDetailsService, UserServices {
 
     @Override
     public User Login(LoginRequest loginRequest) {
-        User result = userRepository.findUsersByAccountEqualsAndPasswordEquals(Hashing.sha512().hashString(loginRequest.getAccount(), StandardCharsets.UTF_8).toString(), Hashing.sha512().hashString(loginRequest.getPassword(), StandardCharsets.UTF_8).toString());
+        User result = userRepository.findUsersByAccountEqualsAndPasswordEquals(loginRequest.getAccount(),
+                Hashing.sha512().hashString(loginRequest.getPassword(), StandardCharsets.UTF_8).toString());
         if (result != null){
             return result;
         }

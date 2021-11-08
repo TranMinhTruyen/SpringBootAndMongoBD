@@ -96,8 +96,7 @@ public class OrderController {
 			security = {@SecurityRequirement(name = "Authorization")})
 	@GetMapping(value="emp/getOrderByCustomerId")
 	public ResponseEntity<?>getOrderByCustomerId(@RequestParam int page,
-												 @RequestParam int size,
-												 @RequestParam int id){
+												 @RequestParam int size){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null &&
 				(
@@ -106,7 +105,8 @@ public class OrderController {
 								authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("USER"))
 				)
 		){
-			CommonResponse commonResponse = orderServices.getOrderByCustomerId(page, size, id);
+			CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+			CommonResponse commonResponse = orderServices.getOrderByCustomerId(page, size, customUserDetail.getUser().getId());
 			if (commonResponse != null){
 				return new ResponseEntity<>(commonResponse, HttpStatus.OK);
 			}

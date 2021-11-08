@@ -7,6 +7,7 @@ import com.example.common.request.CategoryRequest;
 import com.example.common.response.BrandResponse;
 import com.example.common.response.CategoryResponse;
 import com.example.common.response.CommonResponse;
+import com.example.common.response.ProductResponse;
 import com.example.repository.mysql.CategoryRepository;
 import com.example.repository.mysql.ProductRepository;
 import com.example.repository.specification.CategorySpecification;
@@ -14,6 +15,7 @@ import com.example.services.CategoryServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +35,7 @@ public class CategoryServicesImp implements CategoryServices {
 			newCategory.setName(categoryRequest.getName());
 			newCategory.setDescription(categoryRequest.getDescription());
 			categoryRepository.save(newCategory);
+			return true;
 		}
 		return false;
 	}
@@ -40,15 +43,24 @@ public class CategoryServicesImp implements CategoryServices {
 	@Override
 	public CommonResponse getAllCategory(int page, int size) {
 		List<Category> result = categoryRepository.findAll();
-		if (result != null){
-			return new CommonResponse().getCommonResponse(page, size, result);
+		List<CategoryResponse> categoryList = new ArrayList<>();
+		result.stream().forEach(item -> {
+			CategoryResponse categoryResponse = new CategoryResponse();
+			categoryResponse.setId(item.getId());
+			categoryResponse.setName(item.getName());
+			categoryResponse.setDescription(item.getDescription());
+			categoryList.add(categoryResponse);
+		});
+
+		if (categoryList != null){
+			return new CommonResponse().getCommonResponse(page, size, categoryList);
 		}
 		return null;
 	}
 
 	@Override
 	public CommonResponse getCategoryByKeyword(int page, int size, String keyword) {
-		List<Category> result = categoryRepository.findAll(new CategorySpecification(keyword));
+		List result = categoryRepository.findAll(new CategorySpecification(keyword));
 		if (result != null){
 			return new CommonResponse().getCommonResponse(page, size, result);
 		}

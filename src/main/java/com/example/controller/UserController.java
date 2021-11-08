@@ -92,7 +92,7 @@ public class UserController {
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPassword resetPassword) {
         User user = userServices.resetPassword(resetPassword.getEmail());
         if (user != null) {
-            return new ResponseEntity<>("Email has been sent", HttpStatus.OK);
+            return new ResponseEntity<>(user, HttpStatus.OK);
         }
         else
             return new ResponseEntity<>("Not found user email", HttpStatus.NOT_FOUND);
@@ -124,7 +124,7 @@ public class UserController {
             security = {@SecurityRequirement(name = "Authorization")},
             summary = "This is API to update user infomation, user must login first to use this API")
     @PutMapping(value = "updateUser", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?>updateUser(@RequestParam int id, @RequestBody UserRequest userRequest) {
+    public ResponseEntity<?>updateUser(@RequestBody UserRequest userRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
         if (userServices.updateUser(customUserDetail.getUser().getId(), userRequest)  != null){

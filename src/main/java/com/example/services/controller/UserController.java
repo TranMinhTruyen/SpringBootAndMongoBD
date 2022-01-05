@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.services.controller;
 
 import com.example.common.jwt.JWTTokenProvider;
 import com.example.common.jwt.CustomUserDetail;
@@ -6,6 +6,7 @@ import com.example.common.model.ResetPassword;
 import com.example.common.model.User;
 import com.example.common.request.LoginRequest;
 import com.example.common.request.UserRequest;
+import com.example.common.response.BaseResponse;
 import com.example.common.response.CommonResponse;
 import com.example.common.response.JwtResponse;
 import com.example.common.response.UserResponse;
@@ -74,16 +75,16 @@ public class UserController {
 
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))))
     @PostMapping(value = "login", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public BaseResponse login(@RequestBody LoginRequest loginRequest) {
         User user = userServices.Login(loginRequest);
         if (user != null && user.isActive()) {
             CustomUserDetail customUserDetail = new CustomUserDetail(user);
             String jwt = jwtTokenProvider.generateToken(customUserDetail);
             JwtResponse jwtResponse = new JwtResponse(jwt);
-            return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+            return new BaseResponse(HttpStatus.OK.value(),HttpStatus.OK.name(), jwtResponse);
         }
         else
-            return new ResponseEntity<>("Not found user account", HttpStatus.NOT_FOUND);
+            return new BaseResponse(HttpStatus.NOT_FOUND.value(),HttpStatus.NOT_FOUND.name(), "Not found user account");
     }
 
     @Operation(responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(hidden = true))),
